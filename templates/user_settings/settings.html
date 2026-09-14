@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Settings - OrgFlow{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/user_settings/user_settings.css' %}">
+
+<div class="row justify-content-center my-4">
+    <div class="col-lg-9 col-md-11">
+        
+        <!-- Alerts -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show py-2 small mb-3" role="alert">
+                    <i class="bi bi-check-circle-fill me-1"></i> {{ message }}
+                    <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" id="settingsForm">
+            {% csrf_token %}
+
+            <div class="card card-orgflow shadow-sm mb-4">
+                <div class="card-header card-header-org py-3 d-flex justify-content-between align-items-center">
+                    <h4 class="mb-0 fs-5"><i class="bi bi-sliders me-2"></i>OrgFlow System Preferences</h4>
+                    <button type="submit" class="btn btn-org-outline btn-sm" id="saveSettingsBtn" disabled>
+                        <i class="bi bi-save me-1"></i>Save Changes
+                    </button>
+                </div>
+
+                <div class="card-body p-4">
+
+                    <!-- 1. NOTIFICATIONS & REMINDERS -->
+                    <div class="settings-section mb-4">
+                        <h6 class="section-title">
+                            <i class="bi bi-bell-fill me-2 text-gold"></i>Notification & Alert Channels
+                        </h6>
+                        <p class="text-muted small">Control what automated notifications you receive regarding organizational affairs.</p>
+
+                        <div class="list-group list-group-flush border rounded-3 p-2 bg-light">
+                            <!-- Email Notifications -->
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <h6 class="mb-1 text-garnet fw-bold">Email Event Announcements</h6>
+                                    <p class="text-muted small mb-0">Receive email digests whenever an officer posts an official activity or announcement.</p>
+                                </div>
+                                <div class="form-check form-switch ms-3">
+                                    <input class="form-check-input setting-input" type="checkbox" name="email_notifications" id="emailNotif" {% if settings.email_notifications %}checked{% endif %}>
+                                </div>
+                            </div>
+
+                            <!-- Task Deadline Reminders -->
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <h6 class="mb-1 text-garnet fw-bold">Task Deadline Reminders</h6>
+                                    <p class="text-muted small mb-0">Get alerted 24 hours before your assigned committee tasks or deliverables are due.</p>
+                                </div>
+                                <div class="form-check form-switch ms-3">
+                                    <input class="form-check-input setting-input" type="checkbox" name="task_reminders" id="taskReminders" checked>
+                                </div>
+                            </div>
+
+                            <!-- Budget & Financial Alerts -->
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <h6 class="mb-1 text-garnet fw-bold">Budget & Expense Logging Alerts</h6>
+                                    <p class="text-muted small mb-0">Notify officers when an expense or fund allocation is recorded by the Treasurer.</p>
+                                </div>
+                                <div class="form-check form-switch ms-3">
+                                    <input class="form-check-input setting-input" type="checkbox" name="budget_alerts" id="budgetAlerts" checked>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2. DISPLAY & LOCALIZATION -->
+                    <div class="settings-section mb-4">
+                        <h6 class="section-title">
+                            <i class="bi bi-palette-fill me-2 text-maroon"></i>Display & System Interface
+                        </h6>
+                        <p class="text-muted small">Customize how dashboards and metrics are rendered for your device.</p>
+
+                        <div class="list-group list-group-flush border rounded-3 p-2 bg-light">
+                            <!-- Dark Mode -->
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <h6 class="mb-1 text-garnet fw-bold">Dark Mode Theme</h6>
+                                    <p class="text-muted small mb-0">Switch from the Soft Gold backdrop to a high-contrast dark theme for low-light sessions.</p>
+                                </div>
+                                <div class="form-check form-switch ms-3">
+                                    <input class="form-check-input setting-input" type="checkbox" name="dark_mode" id="darkMode" {% if settings.dark_mode %}checked{% endif %}>
+                                </div>
+                            </div>
+
+                            <!-- Compact Table Rows -->
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <h6 class="mb-1 text-garnet fw-bold">Compact Dashboard Rows</h6>
+                                    <p class="text-muted small mb-0">Display smaller card paddings to fit more event records and metrics on one screen.</p>
+                                </div>
+                                <div class="form-check form-switch ms-3">
+                                    <input class="form-check-input setting-input" type="checkbox" name="compact_view" id="compactView">
+                                </div>
+                            </div>
+
+                            <!-- Preferred Currency Format -->
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <h6 class="mb-1 text-garnet fw-bold">Budget Currency Symbol</h6>
+                                    <p class="text-muted small mb-0">Select the currency denomination shown across financial summaries.</p>
+                                </div>
+                                <div class="ms-3" style="min-width: 150px;">
+                                    <select class="form-select form-select-sm setting-input" id="currencySelect">
+                                        <option value="PHP" selected>PHP (₱) - Philippine Peso</option>
+                                        <option value="USD">USD ($) - US Dollar</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3. PRIVACY & VISIBILITY -->
+                    <div class="settings-section mb-4">
+                        <h6 class="section-title">
+                            <i class="bi bi-shield-lock-fill me-2 text-gold"></i>Membership & Directory Privacy
+                        </h6>
+                        <p class="text-muted small">Choose how your officer contact information is displayed across the organization roster.</p>
+
+                        <div class="list-group list-group-flush border rounded-3 p-2 bg-light">
+                            <!-- Directory Visibility -->
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <h6 class="mb-1 text-garnet fw-bold">Public Officer Directory Profile</h6>
+                                    <p class="text-muted small mb-0">Allow other student members to view your position, bio, and assigned committees.</p>
+                                </div>
+                                <div class="form-check form-switch ms-3">
+                                    <input class="form-check-input setting-input" type="checkbox" id="publicRoster" checked>
+                                </div>
+                            </div>
+
+                            <!-- Participation History -->
+                            <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
+                                <div>
+                                    <h6 class="mb-1 text-garnet fw-bold">Activity Attendance History</h6>
+                                    <p class="text-muted small mb-0">Share your past activity participation records on committee reports.</p>
+                                </div>
+                                <div class="form-check form-switch ms-3">
+                                    <input class="form-check-input setting-input" type="checkbox" id="shareAttendance" checked>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 4. SECURITY & ACCOUNT CREDENTIALS -->
+                    <div class="settings-section">
+                        <h6 class="section-title">
+                            <i class="bi bi-key-fill me-2 text-maroon"></i>Security & Session
+                        </h6>
+                        <p class="text-muted small">Manage authentication safety and active login credentials.</p>
+
+                        <div class="border rounded-3 p-3 bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
+                            <div>
+                                <h6 class="mb-1 text-garnet fw-bold">Account Password</h6>
+                                <p class="text-muted small mb-0">Regularly updating your password keeps organizational records secure.</p>
+                            </div>
+                            <button type="button" class="btn btn-outline-dark btn-sm fw-semibold" onclick="alert('Password management link will be sent to your email.')">
+                                <i class="bi bi-lock-fill me-1"></i>Change Password
+                            </button>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="{% static 'js/user_settings/user_settings.js' %}"></script>
+{% endblock %}

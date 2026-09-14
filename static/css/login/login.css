@@ -1,0 +1,8 @@
+/* Login Feature Specific Styles */
+.card-orgflow {
+    transition: transform 0.2s ease-in-out;
+}
+
+.card-orgflow:hover {
+    transform: translateY(-2px);
+}

@@ -1,0 +1,38 @@
+/* Home Dashboard Specific Styles */
+.welcome-banner {
+    background: linear-gradient(135deg, #990000, #6B2E1E);
+}
+
+.badge-org {
+    background-color: #DAA520;
+    color: #6B2E1E;
+    font-weight: 700;
+}
+
+.text-maroon { color: #990000 !important; }
+.text-gold { color: #DAA520 !important; }
+.text-garnet { color: #6B2E1E !important; }
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.bg-maroon-light { background-color: #fce8e6; }
+.bg-gold-light { background-color: #fdf3d8; }
+.bg-success-light { background-color: #e8f5e9; }
+.bg-danger-light { background-color: #ffebee; }
+
+.action-btn {
+    border-color: rgba(107, 46, 30, 0.2);
+    transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+    background-color: #F6E6C9;
+    border-color: #DAA520;
+}

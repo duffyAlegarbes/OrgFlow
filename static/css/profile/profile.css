@@ -1,0 +1,84 @@
+/* Profile Avatar Container */
+.profile-avatar-container {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    border-radius: 50%;
+    border: 3px solid #DAA520;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(107, 46, 30, 0.2);
+}
+
+.profile-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.profile-fallback {
+    width: 100%;
+    height: 100%;
+    background-color: #990000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Hover Camera Overlay */
+.avatar-hover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(107, 46, 30, 0.75);
+    color: #F6E6C9;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.25s ease-in-out;
+}
+
+.avatar-hover-text {
+    font-size: 0.65rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.profile-avatar-container:hover .avatar-hover-overlay {
+    opacity: 1;
+}
+
+.bg-gold {
+    background-color: #DAA520 !important;
+}
+
+.text-garnet {
+    color: #6B2E1E !important;
+}
+
+/* Modal Styling */
+.modal-content {
+    background-color: #FFFFFF;
+}
+
+.btn-close-white {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Unsaturated Disabled State for Save Changes Button */
+#saveProfileBtn:disabled,
+.btn-org-primary:disabled {
+    background-color: #b0a59b !important;
+    border-color: #9d9389 !important;
+    color: #ffffff !important;
+    opacity: 0.55 !important;
+    filter: grayscale(100%) !important;
+    cursor: not-allowed !important;
+    pointer-events: auto !important; /* Ensures the 'not-allowed' cursor shows on hover */
+}

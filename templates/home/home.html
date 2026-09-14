@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - OrgFlow{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/home/home.css' %}">
+
+<!-- Welcome Banner -->
+<div class="card card-orgflow mb-4 p-4 welcome-banner">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <span class="badge mb-2 px-3 py-2 badge-org">
+                <i class="bi bi-building me-1"></i> Student Organization
+            </span>
+            <h2 class="fw-bold mb-1 text-white">{{ org_name }}</h2>
+            <p class="mb-0 text-white-50">Centralized Activity, Member & Budget Management Platform</p>
+        </div>
+        <div>
+            <span class="badge bg-light text-dark px-3 py-2 fs-6">
+                <i class="bi bi-calendar-check me-1 text-warning"></i> Academic Term 2024-2025
+            </span>
+        </div>
+    </div>
+</div>
+
+<!-- Metrics Overview Cards -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-orgflow p-3 h-100 stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold">TOTAL MEMBERS</span>
+                    <h3 class="fw-bold my-1 text-maroon">{{ active_members }}</h3>
+                    <small class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Active</small>
+                </div>
+                <div class="stat-icon bg-maroon-light">
+                    <i class="bi bi-people-fill fs-3 text-maroon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-orgflow p-3 h-100 stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold">PLANNED EVENTS</span>
+                    <h3 class="fw-bold my-1 text-garnet">{{ upcoming_activities_count }}</h3>
+                    <small class="text-gold fw-semibold"><i class="bi bi-clock-history me-1"></i>Upcoming</small>
+                </div>
+                <div class="stat-icon bg-gold-light">
+                    <i class="bi bi-calendar2-week-fill fs-3 text-gold"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-orgflow p-3 h-100 stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold">AVAILABLE BUDGET</span>
+                    <h3 class="fw-bold my-1 text-success">₱{{ remaining_budget }}</h3>
+                    <small class="text-muted fw-semibold"><i class="bi bi-wallet2 me-1"></i>Remaining</small>
+                </div>
+                <div class="stat-icon bg-success-light">
+                    <i class="bi bi-cash-stack fs-3 text-success"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-orgflow p-3 h-100 stat-card">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <span class="text-muted small fw-semibold">PENDING TASKS</span>
+                    <h3 class="fw-bold my-1 text-danger">5</h3>
+                    <small class="text-danger fw-semibold"><i class="bi bi-exclamation-circle me-1"></i>Requires Action</small>
+                </div>
+                <div class="stat-icon bg-danger-light">
+                    <i class="bi bi-check2-square fs-3 text-danger"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main Content Grid -->
+<div class="row g-4">
+    <div class="col-lg-8">
+        <!-- Announcements -->
+        <div class="card card-orgflow mb-4">
+            <div class="card-header card-header-org d-flex align-items-center justify-content-between py-3">
+                <span><i class="bi bi-megaphone-fill me-2"></i>Official Announcement</span>
+                <span class="badge badge-org">Latest</span>
+            </div>
+            <div class="card-body p-4">
+                <p class="card-text fs-6 lead text-dark">{{ recent_announcement }}</p>
+                <div class="d-flex align-items-center text-muted small mt-3">
+                    <i class="bi bi-clock me-1"></i> Posted by Secretary • 2 hours ago
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="card card-orgflow p-4">
+            <h5 class="fw-bold mb-3 text-garnet"><i class="bi bi-lightning-charge-fill me-2 text-gold"></i>Management Actions</h5>
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <button class="btn btn-outline-dark w-100 py-2 text-start fw-semibold action-btn" onclick="alertAction('Activity creation module')">
+                        <i class="bi bi-plus-circle-fill me-2 text-maroon"></i>New Event
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-dark w-100 py-2 text-start fw-semibold action-btn" onclick="alertAction('Financial expense log')">
+                        <i class="bi bi-journal-plus me-2 text-gold"></i>Record Expense
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <button class="btn btn-outline-dark w-100 py-2 text-start fw-semibold action-btn" onclick="alertAction('Member roster directory')">
+                        <i class="bi bi-person-plus-fill me-2 text-garnet"></i>Add Member
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <div class="col-lg-4">
+        <div class="card card-orgflow p-4">
+            <h5 class="fw-bold mb-3 text-garnet"><i class="bi bi-info-circle-fill me-2 text-maroon"></i>Organization Info</h5>
+            <p class="small text-muted mb-3">
+                OrgFlow centralizes event planning, membership tracking, and financial transparency for student organizations.
+            </p>
+            <ul class="list-group list-group-flush small">
+                <li class="list-group-item d-flex justify-content-between px-0">
+                    <span class="text-muted">Database Backend:</span>
+                    <span class="badge bg-primary">Supabase PostgreSQL</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                    <span class="text-muted">User Session:</span>
+                    <span class="badge bg-success">Authenticated</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/home/home.js' %}"></script>
+{% endblock %}

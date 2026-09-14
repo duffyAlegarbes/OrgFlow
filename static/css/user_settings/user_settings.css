@@ -1,0 +1,33 @@
+/* User Settings Specific Styles */
+.section-title {
+    font-weight: 700;
+    color: #6B2E1E;
+    margin-bottom: 0.25rem;
+    font-size: 1.05rem;
+}
+
+.text-garnet { color: #6B2E1E !important; }
+.text-maroon { color: #990000 !important; }
+.text-gold { color: #DAA520 !important; }
+
+/* Switch Toggle Styling in Crimson Maroon */
+.form-check-input:checked {
+    background-color: #990000;
+    border-color: #990000;
+}
+
+.form-check-input:focus {
+    border-color: #DAA520;
+    box-shadow: 0 0 0 0.25rem rgba(218, 165, 32, 0.25);
+}
+
+/* Unsaturated Disabled State for Save Changes Button */
+#saveSettingsBtn:disabled {
+    background-color: #b0a59b !important;
+    border-color: #9d9389 !important;
+    color: #ffffff !important;
+    opacity: 0.55 !important;
+    filter: grayscale(100%) !important;
+    cursor: not-allowed !important;
+    pointer-events: auto !important;
+}

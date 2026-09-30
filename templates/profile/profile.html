@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}User Profile - OrgFlow{% endblock %}
+{% block title %}Officer Profile - OrgFlow{% endblock %}
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/profile/profile.css' %}">
@@ -10,20 +10,19 @@
     <div class="col-md-8">
         <div class="card card-orgflow">
             <div class="card-header card-header-org py-3 d-flex justify-content-between align-items-center">
-                <h4 class="mb-0 fs-5"><i class="bi bi-person-lines-fill me-2"></i>Officer Profile</h4>
+                <h4 class="mb-0 fs-5"><i class="bi bi-mortarboard-fill me-2"></i>Officer Profile</h4>
                 <!-- Edit Profile Button -->
                 <button type="button" class="btn btn-org-outline btn-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                    <i class="bi bi-pencil-square me-1"></i>Edit Profile
+                    <i class="bi bi-pencil-square me-1"></i>Edit Details
                 </button>
             </div>
             <div class="card-body p-4">
 
-                <!-- Alert Messages (Success & Error) -->
+                <!-- Alert Messages -->
                 {% if messages %}
                     {% for message in messages %}
-                        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show py-2 small" role="alert">
-                            <i class="bi {% if message.tags == 'error' %}bi-exclamation-triangle-fill{% else %}bi-check-circle-fill{% endif %} me-1"></i>
-                            {{ message }}
+                        <div class="alert alert-success alert-dismissible fade show py-2 small" role="alert">
+                            <i class="bi bi-check-circle-fill me-1"></i> {{ message }}
                             <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
                         </div>
                     {% endfor %}
@@ -35,6 +34,7 @@
                     <input type="file" name="profile_image" id="profileImageInput" accept="image/*">
                 </form>
 
+                <!-- Profile Header -->
                 <div class="d-flex align-items-center gap-4 flex-wrap pb-4 border-bottom">
                     
                     <!-- Clickable Avatar with Hover Overlay -->
@@ -54,29 +54,40 @@
                     </div>
 
                     <div>
-                        <h3 class="fw-bold mb-1 text-garnet">{{ user.username }}</h3>
-                        <span class="badge bg-gold text-garnet fw-bold me-2">Active Officer</span>
-                        <span class="text-muted small"><i class="bi bi-envelope me-1"></i>{{ user.email|default:"No email set" }}</span>
-                        <div class="text-muted small mt-1">
-                            <i class="bi bi-info-circle me-1"></i>Click the photo to change picture
+                        <!-- HIGHLIGHTED FULL NAME AS PRIMARY -->
+                        <h2 class="fw-bold mb-1 text-garnet">
+                            {{ profile.full_name|default:user.username }}
+                        </h2>
+                        
+                        <div class="d-flex align-items-center gap-2 mb-2">
+                            <span class="badge bg-secondary-subtle text-dark border px-2 py-1">
+                                <i class="bi bi-at me-1"></i>{{ user.username }}
+                            </span>
+                            <span class="badge bg-gold text-garnet fw-bold px-2 py-1">
+                                Student Officer
+                            </span>
                         </div>
+
+                        <span class="text-muted small">
+                            <i class="bi bi-envelope me-1 text-maroon"></i>{{ user.email|default:"No institutional email provided" }}
+                        </span>
                     </div>
                 </div>
 
                 <!-- Profile Details Display -->
                 <div class="row g-3 mt-3">
                     <div class="col-md-6">
-                        <label class="form-label text-muted small mb-1">Full Name</label>
-                        <p class="fw-semibold fs-6 text-dark mb-0">{{ profile.full_name|default:"Not specified" }}</p>
+                        <label class="form-label text-muted small mb-1">Permanent Username / ID</label>
+                        <p class="fw-semibold fs-6 text-dark mb-0 font-monospace">{{ user.username }}</p>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label text-muted small mb-1">Account Registered</label>
-                        <p class="fw-semibold fs-6 text-dark mb-0">{{ user.date_joined|date:"M d, Y" }}</p>
+                        <label class="form-label text-muted small mb-1">Member Since</label>
+                        <p class="fw-semibold fs-6 text-dark mb-0">{{ user.date_joined|date:"F d, Y" }}</p>
                     </div>
                     <div class="col-12">
-                        <label class="form-label text-muted small mb-1">Biography / Position Description</label>
+                        <label class="form-label text-muted small mb-1">Position & Bio</label>
                         <div class="p-3 bg-light rounded-3 text-dark">
-                            {{ profile.bio|default:"No biographical info provided. Click 'Edit Profile' to add your details." }}
+                            {{ profile.bio|default:"No position description or biography set yet. Click 'Edit Details' to specify your role." }}
                         </div>
                     </div>
                 </div>
@@ -97,7 +108,7 @@
         <div class="modal-content card-orgflow border-0">
             <div class="modal-header card-header-org py-3">
                 <h5 class="modal-title fs-5" id="editProfileModalLabel">
-                    <i class="bi bi-pencil-fill me-2" style="color: var(--harvest-gold);"></i>Edit Officer Details
+                    <i class="bi bi-pencil-fill me-2" style="color: var(--harvest-gold);"></i>Edit Officer Credentials
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -106,31 +117,29 @@
                 <input type="hidden" name="update_profile" value="1">
                 
                 <div class="modal-body p-4">
-                    <!-- Username Input -->
-                    <div class="mb-3">
-                        <label for="usernameInput" class="form-label">Username</label>
-                        <div class="input-group">
-                            <!-- <span class="input-group-text" style="background-color: var(--soft-gold); color: var(--deep-garnet); font-weight:700;">@</span> -->
-                            <input type="text" class="form-control" id="usernameInput" name="username" value="{{ user.username }}" required placeholder="Username">
-                        </div>
-                    </div>
-
-                    <!-- Full Name Input -->
+                    <!-- Full Name (Primary Field) -->
                     <div class="mb-3">
                         <label for="fullNameInput" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="fullNameInput" name="full_name" value="{{ profile.full_name }}" placeholder="e.g. Juan Dela Cruz">
+                        <input type="text" class="form-control" id="fullNameInput" name="full_name" value="{{ profile.full_name }}" placeholder="e.g. Juan Dela Cruz" required>
+                        <div class="form-text text-muted small">Your official student name displayed across organization records.</div>
                     </div>
 
-                    <!-- Email Input -->
+                    <!-- Permanent Username (Locked) -->
                     <div class="mb-3">
-                        <label for="emailInput" class="form-label">Email Address</label>
-                        <input type="email" class="form-control" id="emailInput" name="email" value="{{ user.email }}" placeholder="e.g. officer@university.edu">
+                        <label class="form-label text-muted small">Username (Permanent Account ID)</label>
+                        <input type="text" class="form-control bg-light font-monospace text-muted" value="{{ user.username }}" readonly disabled>
                     </div>
 
-                    <!-- Bio Input -->
+                    <!-- Institutional Email -->
                     <div class="mb-3">
-                        <label for="bioInput" class="form-label">Biography / Organization Role</label>
-                        <textarea class="form-control" id="bioInput" name="bio" rows="4" placeholder="Describe your position or responsibilities...">{{ profile.bio }}</textarea>
+                        <label for="emailInput" class="form-label">Institutional Email Address</label>
+                        <input type="email" class="form-control" id="emailInput" name="email" value="{{ user.email }}" placeholder="e.g. officer@university.edu.ph">
+                    </div>
+
+                    <!-- Position & Bio -->
+                    <div class="mb-3">
+                        <label for="bioInput" class="form-label">Officer Position & Responsibilities</label>
+                        <textarea class="form-control" id="bioInput" name="bio" rows="4" placeholder="e.g. Committee Head for Logistics, Lead Coordinator...">{{ profile.bio }}</textarea>
                     </div>
                 </div>
 

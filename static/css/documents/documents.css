@@ -1,0 +1,24 @@
+/* Document Repository Styles */
+.welcome-banner {
+    background: linear-gradient(135deg, #990000, #6B2E1E);
+}
+
+.badge-org {
+    background-color: #DAA520;
+    color: #6B2E1E;
+    font-weight: 700;
+}
+
+.doc-icon-box {
+    width: 42px;
+    height: 42px;
+    background-color: #fce8e6;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.text-maroon { color: #990000 !important; }
+.text-gold { color: #DAA520 !important; }
+.text-garnet { color: #6B2E1E !important; }

@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Members - {{ org.name }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/organizations/organizations.css' %}">
+
+<!-- Header -->
+<div class="card card-orgflow mb-4 p-4 welcome-banner text-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <span class="badge bg-gold text-garnet fw-bold mb-2">Officer Control Panel</span>
+            <h2 class="fw-bold mb-1"><i class="bi bi-people-fill me-2 text-warning"></i>{{ org.name }} — Roster Management</h2>
+            <p class="mb-0 text-white-50">Approve joining requests, assign leadership roles, and maintain the active member directory.</p>
+        </div>
+        <div>
+            <a href="{% url 'organizations:detail' slug=org.slug %}" class="btn btn-outline-light btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Back to Organization Profile
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Alerts -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show py-2 small mb-4" role="alert">
+            <i class="bi bi-check-circle-fill me-1"></i> {{ message }}
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Pending Membership Requests -->
+<div class="card card-orgflow mb-4">
+    <div class="card-header card-header-org py-3 d-flex justify-content-between align-items-center">
+        <h5 class="mb-0 fs-6"><i class="bi bi-hourglass-split me-2 text-gold"></i>Pending Join Requests ({{ pending_requests.count }})</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small">
+                    <tr>
+                        <th class="ps-4">Applicant Name</th>
+                        <th>Username</th>
+                        <th>Date Requested</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for p in pending_requests %}
+                        <tr>
+                            <td class="ps-4 fw-bold text-dark">
+                                {{ p.user.profile.full_name|default:p.user.username }}
+                            </td>
+                            <td class="font-monospace text-muted small">@{{ p.user.username }}</td>
+                            <td class="small text-muted">{{ p.created_at|date:"M d, Y" }}</td>
+                            <td class="text-end pe-4">
+                                <form method="post" style="display:inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="membership_id" value="{{ p.id }}">
+                                    <button type="submit" name="action" value="approve_request" class="btn btn-success btn-sm me-1">
+                                        <i class="bi bi-check-lg me-1"></i>Approve
+                                    </button>
+                                    <button type="submit" name="action" value="reject_request" class="btn btn-outline-danger btn-sm" onclick="return confirm('Reject this applicant?');">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-muted py-4 small">
+                                <i class="bi bi-check-circle text-success me-1"></i>No pending join requests at this time.
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Active Members Directory & Role Assignment -->
+<div class="card card-orgflow">
+    <div class="card-header card-header-org py-3">
+        <h5 class="mb-0 fs-6"><i class="bi bi-person-check-fill me-2 text-gold"></i>Active Organization Members ({{ active_members.count }})</h5>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light small">
+                    <tr>
+                        <th class="ps-4">Member Name</th>
+                        <th>Username</th>
+                        <th>Current Role</th>
+                        {% if is_president %}
+                            <th>Assign New Role</th>
+                            <th class="text-end pe-4">Manage</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in active_members %}
+                        <tr>
+                            <td class="ps-4 fw-bold text-dark">
+                                {{ m.user.profile.full_name|default:m.user.username }}
+                                {% if m.user == user %}
+                                    <span class="badge bg-light text-dark border ms-1">You</span>
+                                {% endif %}
+                            </td>
+                            <td class="font-monospace text-muted small">@{{ m.user.username }}</td>
+                            <td>
+                                <span class="badge {% if m.role == 'President' %}bg-maroon text-white{% elif m.role == 'Officer' %}bg-gold text-garnet{% else %}bg-secondary text-white{% endif %}">
+                                    {{ m.role }}
+                                </span>
+                            </td>
+
+                            {% if is_president %}
+                                <td>
+                                    <form method="post" class="d-flex gap-2" style="max-width: 220px;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="update_role">
+                                        <input type="hidden" name="membership_id" value="{{ m.id }}">
+                                        <select name="new_role" class="form-select form-select-sm">
+                                            {% for role_key, role_label in roles %}
+                                                <option value="{{ role_key }}" {% if m.role == role_key %}selected{% endif %}>{{ role_label }}</option>
+                                            {% endfor %}
+                                        </select>
+                                        <button type="submit" class="btn btn-outline-dark btn-sm">Set</button>
+                                    </form>
+                                </td>
+                                <td class="text-end pe-4">
+                                    {% if m.user != user %}
+                                        <form method="post" style="display:inline;" onsubmit="return confirm('Remove {{ m.user.username }} from the organization?');">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="remove_member">
+                                            <input type="hidden" name="membership_id" value="{{ m.id }}">
+                                            <button type="submit" class="btn btn-outline-danger btn-sm" title="Remove Member">
+                                                <i class="bi bi-trash-fill"></i>
+                                            </button>
+                                        </form>
+                                    {% endif %}
+                                </td>
+                            {% endif %}
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center text-muted py-4 small">No active members found.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/organizations/organizations.js' %}"></script>
+{% endblock %}

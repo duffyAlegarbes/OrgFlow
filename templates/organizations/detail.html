@@ -1,0 +1,165 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ org.name }} - OrgFlow{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/organizations/organizations.css' %}">
+
+<!-- Alerts -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'info' %}alert-info{% else %}alert-success{% endif %} alert-dismissible fade show py-2 small mb-3" role="alert">
+            <i class="bi bi-info-circle-fill me-1"></i> {{ message }}
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Org Profile Header -->
+<div class="card card-orgflow mb-4 p-4">
+    <div class="d-flex align-items-center gap-4 flex-wrap">
+        {% if org.logo %}
+            <img src="{{ org.logo.url }}" alt="{{ org.name }}" class="org-logo-large">
+        {% else %}
+            <div class="org-logo-large-placeholder">
+                <i class="bi bi-building display-4 text-white"></i>
+            </div>
+        {% endif %}
+        
+        <div class="flex-grow-1">
+            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                <span class="badge bg-gold text-garnet fw-bold px-3 py-1">{{ org.category }}</span>
+                
+                <!-- Current User Membership Badge -->
+                {% if membership %}
+                    {% if membership.status == 'Active' %}
+                        <span class="badge bg-maroon text-white px-3 py-1">
+                            <i class="bi bi-person-badge-fill me-1" style="color: var(--harvest-gold);"></i>{{ membership.role }}
+                        </span>
+                    {% elif membership.status == 'Pending' %}
+                        <span class="badge bg-warning text-dark px-3 py-1">
+                            <i class="bi bi-hourglass-split me-1"></i>Membership Pending
+                        </span>
+                    {% endif %}
+                {% endif %}
+            </div>
+
+            <h2 class="fw-bold mb-1 text-garnet">{{ org.name }} {% if org.acronym %}({{ org.acronym }}){% endif %}</h2>
+            <p class="text-muted small mb-0">
+                <i class="bi bi-people-fill me-1"></i>{{ active_members.count }} Members • Registered on {{ org.created_at|date:"F d, Y" }}
+                {% if org.contact_email %} • <i class="bi bi-envelope me-1 ms-2"></i>{{ org.contact_email }}{% endif %}
+            </p>
+        </div>
+
+        <!-- Action Buttons based on Role & Membership -->
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'documents:list' org_slug=org.slug %}" class="btn btn-outline-dark btn-sm fw-semibold">
+                <i class="bi bi-folder2-open me-1 text-gold"></i>Documents
+            </a>
+
+            {% if is_officer %}
+                <a href="{% url 'organizations:manage_members' slug=org.slug %}" class="btn btn-org-primary btn-sm position-relative">
+                    <i class="bi bi-people-fill me-1"></i>Manage Members
+                    {% if pending_count > 0 %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark">
+                            {{ pending_count }}
+                        </span>
+                    {% endif %}
+                </a>
+            {% endif %}
+
+            {% if not membership %}
+                <form action="{% url 'organizations:join' slug=org.slug %}" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-success btn-sm fw-bold">
+                        <i class="bi bi-person-plus-fill me-1"></i>Join Organization
+                    </button>
+                </form>
+            {% elif membership.status == 'Active' %}
+                <form action="{% url 'organizations:leave' slug=org.slug %}" method="post" onsubmit="return confirm('Are you sure you want to leave this organization?');">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                        <i class="bi bi-box-arrow-right me-1"></i>Leave
+                    </button>
+                </form>
+            {% endif %}
+
+            <a href="{% url 'organizations:directory' %}" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1"></i>Directory
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <!-- Left Column: Mission & Member Roster -->
+    <div class="col-lg-8">
+        <div class="card card-orgflow p-4 mb-4">
+            <h5 class="fw-bold text-garnet mb-3"><i class="bi bi-file-text-fill me-2 text-maroon"></i>About the Organization</h5>
+            <div class="p-3 bg-light rounded-3 text-dark lead fs-6">
+                {{ org.description|linebreaks }}
+            </div>
+        </div>
+
+        <!-- Active Members Roster -->
+        <div class="card card-orgflow p-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold text-garnet mb-0"><i class="bi bi-person-lines-fill me-2 text-gold"></i>Members & Officers</h5>
+                <span class="badge bg-light text-dark border">{{ active_members.count }} Active</span>
+            </div>
+
+            <div class="row g-3">
+                {% for m in active_members %}
+                    <div class="col-md-6">
+                        <div class="p-3 border rounded-3 d-flex align-items-center gap-3 bg-light">
+                            {% if m.user.profile.profile_image %}
+                                <img src="{{ m.user.profile.profile_image.url }}" class="rounded-circle" style="width: 45px; height: 45px; object-fit: cover;">
+                            {% else %}
+                                <div class="rounded-circle d-flex align-items-center justify-content-center text-white" style="width: 45px; height: 45px; background-color: var(--crimson-maroon);">
+                                    <i class="bi bi-person-fill"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="flex-grow-1 overflow-hidden">
+                                <h6 class="mb-0 text-dark fw-bold text-truncate">
+                                    {{ m.user.profile.full_name|default:m.user.username }}
+                                </h6>
+                                <small class="text-muted d-block font-monospace">@{{ m.user.username }}</small>
+                                <span class="badge {% if m.role == 'President' %}bg-maroon text-white{% elif m.role == 'Officer' %}bg-gold text-garnet{% else %}bg-secondary text-white{% endif %} py-1 px-2 mt-1" style="font-size: 0.7rem;">
+                                    {{ m.role }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <p class="text-muted small">No active members found.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column: Quick Info -->
+    <div class="col-lg-4">
+        <div class="card card-orgflow p-4 mb-4">
+            <h5 class="fw-bold text-garnet mb-3"><i class="bi bi-info-circle-fill me-2 text-maroon"></i>Quick Details</h5>
+            <ul class="list-group list-group-flush small">
+                <li class="list-group-item d-flex justify-content-between px-0">
+                    <span class="text-muted">Primary Category:</span>
+                    <span class="fw-bold text-dark">{{ org.category }}</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                    <span class="text-muted">Total Active Roster:</span>
+                    <span class="badge bg-gold text-garnet">{{ active_members.count }} Members</span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                    <span class="text-muted">Founded By:</span>
+                    <span class="fw-bold text-dark">@{{ org.created_by.username|default:"System" }}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/organizations/organizations.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,57 @@
+/* Organizations Feature Specific Styles */
+.welcome-banner {
+    background: linear-gradient(135deg, #990000, #6B2E1E);
+}
+
+.org-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.org-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(107, 46, 30, 0.12);
+}
+
+.org-logo-thumbnail {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 2px solid #DAA520;
+}
+
+.org-logo-placeholder {
+    width: 60px;
+    height: 60px;
+    background-color: #990000;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.org-logo-large {
+    width: 90px;
+    height: 90px;
+    object-fit: cover;
+    border-radius: 16px;
+    border: 3px solid #DAA520;
+}
+
+.org-logo-large-placeholder {
+    width: 90px;
+    height: 90px;
+    background-color: #990000;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bg-maroon {
+    background-color: #990000 !important;
+}
+
+.text-gold {
+    color: #DAA520 !important;
+}

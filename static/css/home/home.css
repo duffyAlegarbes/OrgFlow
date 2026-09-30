@@ -1,4 +1,7 @@
-/* Home Dashboard Specific Styles */
+/* ================================================= */
+/* ORGFLOW HOME DASHBOARD STYLES                     */
+/* ================================================= */
+
 .welcome-banner {
     background: linear-gradient(135deg, #990000, #6B2E1E);
 }
@@ -27,12 +30,135 @@
 .bg-success-light { background-color: #e8f5e9; }
 .bg-danger-light { background-color: #ffebee; }
 
-.action-btn {
-    border-color: rgba(107, 46, 30, 0.2);
-    transition: all 0.2s ease;
+/* Quick Action Tiles */
+.quick-action-tile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background-color: #ffffff;
+    border: 1.5px solid rgba(107, 46, 30, 0.16) !important;
+    border-radius: 12px;
+    text-decoration: none !important;
+    transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: 0 2px 6px rgba(107, 46, 30, 0.04);
+    position: relative;
 }
 
-.action-btn:hover {
-    background-color: #F6E6C9;
-    border-color: #DAA520;
+.tile-icon-box {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.25s ease;
+}
+
+.tile-title {
+    color: #6B2E1E !important;
+    font-weight: 700;
+    font-size: 0.95rem;
+    margin-bottom: 0.15rem;
+    transition: color 0.2s ease;
+}
+
+.tile-subtitle {
+    color: #6c757d !important;
+    font-size: 0.8rem;
+    margin-bottom: 0;
+    transition: color 0.2s ease;
+}
+
+.quick-action-tile:hover {
+    background-color: #FFF9EE !important;
+    border-color: #DAA520 !important;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(107, 46, 30, 0.12) !important;
+}
+
+.quick-action-tile:hover .tile-title {
+    color: #990000 !important;
+}
+
+.quick-action-tile:hover .tile-subtitle {
+    color: #343a40 !important;
+}
+
+.quick-action-tile:hover .tile-icon-box {
+    transform: scale(1.08);
+}
+
+/* My Clubs Sidebar Items */
+.club-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0.9rem;
+    border-radius: 10px;
+    text-decoration: none !important;
+    background-color: #FFFFFF;
+    border: 1.5px solid rgba(107, 46, 30, 0.1) !important;
+    transition: all 0.2s ease-in-out;
+    margin-bottom: 0.4rem;
+}
+
+.club-name {
+    color: #495057;
+    font-size: 0.88rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.club-dot {
+    font-size: 0.45rem;
+    min-width: 0.45rem;
+}
+
+.club-list-item.active-club {
+    background-color: #FFF7EB !important;
+    border-color: #DAA520 !important;
+}
+
+.club-list-item.active-club .club-name {
+    color: #990000 !important;
+    font-weight: 700 !important;
+}
+
+.club-list-item:hover {
+    background-color: #FAF4E8 !important;
+    border-color: #DAA520 !important;
+    transform: translateX(3px);
+}
+
+.club-list-item:hover .club-name {
+    color: #990000 !important;
+}
+
+.club-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    padding: 0.3rem 0.6rem;
+    border-radius: 6px;
+    white-space: nowrap;
+    letter-spacing: 0.2px;
+    display: inline-block;
+}
+
+.badge-president {
+    background-color: #990000 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #7a0000;
+}
+
+.badge-officer {
+    background-color: #DAA520 !important;
+    color: #6B2E1E !important;
+    border: 1px solid #b88a18;
+}
+
+.badge-member {
+    background-color: #6c757d !important;
+    color: #FFFFFF !important;
 }

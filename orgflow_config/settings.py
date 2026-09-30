@@ -36,12 +36,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-    # Vertical Slicing Feature Apps (Replaced accounts & core)
     'apps.login',
     'apps.register',
     'apps.home',
     'apps.profile',
     'apps.user_settings',
+    'apps.organizations',
+    'apps.documents',
+    'apps.projects',
+    'apps.accreditation',
+    'apps.kpi',
+    'apps.posts',
+    'apps.notifications', 
 ]
 
 MIDDLEWARE = [

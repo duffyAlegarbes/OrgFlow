@@ -4,149 +4,470 @@
 {% block title %}Dashboard - OrgFlow{% endblock %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/home/home.css' %}">
+<style>
+    /* ================================================= */
+    /* BULLETPROOF SCOPED DASHBOARD STYLES               */
+    /* ================================================= */
+    .welcome-banner {
+        background: linear-gradient(135deg, #990000, #6B2E1E);
+    }
 
-<!-- Welcome Banner -->
-<div class="card card-orgflow mb-4 p-4 welcome-banner">
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-        <div>
-            <span class="badge mb-2 px-3 py-2 badge-org">
-                <i class="bi bi-building me-1"></i> Student Organization
-            </span>
-            <h2 class="fw-bold mb-1 text-white">{{ org_name }}</h2>
-            <p class="mb-0 text-white-50">Centralized Activity, Member & Budget Management Platform</p>
-        </div>
-        <div>
-            <span class="badge bg-light text-dark px-3 py-2 fs-6">
-                <i class="bi bi-calendar-check me-1 text-warning"></i> Academic Term 2024-2025
-            </span>
-        </div>
-    </div>
-</div>
+    .badge-org {
+        background-color: #DAA520;
+        color: #6B2E1E;
+        font-weight: 700;
+    }
 
-<!-- Metrics Overview Cards -->
-<div class="row g-3 mb-4">
-    <div class="col-md-3 col-sm-6">
-        <div class="card card-orgflow p-3 h-100 stat-card">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <span class="text-muted small fw-semibold">TOTAL MEMBERS</span>
-                    <h3 class="fw-bold my-1 text-maroon">{{ active_members }}</h3>
-                    <small class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Active</small>
-                </div>
-                <div class="stat-icon bg-maroon-light">
-                    <i class="bi bi-people-fill fs-3 text-maroon"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+    .text-maroon { color: #990000 !important; }
+    .text-gold { color: #DAA520 !important; }
+    .text-garnet { color: #6B2E1E !important; }
 
-    <div class="col-md-3 col-sm-6">
-        <div class="card card-orgflow p-3 h-100 stat-card">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <span class="text-muted small fw-semibold">PLANNED EVENTS</span>
-                    <h3 class="fw-bold my-1 text-garnet">{{ upcoming_activities_count }}</h3>
-                    <small class="text-gold fw-semibold"><i class="bi bi-clock-history me-1"></i>Upcoming</small>
-                </div>
-                <div class="stat-icon bg-gold-light">
-                    <i class="bi bi-calendar2-week-fill fs-3 text-gold"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+    /* Stat Icons */
+    .stat-icon {
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+    }
 
-    <div class="col-md-3 col-sm-6">
-        <div class="card card-orgflow p-3 h-100 stat-card">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <span class="text-muted small fw-semibold">AVAILABLE BUDGET</span>
-                    <h3 class="fw-bold my-1 text-success">₱{{ remaining_budget }}</h3>
-                    <small class="text-muted fw-semibold"><i class="bi bi-wallet2 me-1"></i>Remaining</small>
-                </div>
-                <div class="stat-icon bg-success-light">
-                    <i class="bi bi-cash-stack fs-3 text-success"></i>
-                </div>
-            </div>
-        </div>
-    </div>
+    .bg-maroon-light { background-color: #fce8e6; }
+    .bg-gold-light { background-color: #fdf3d8; }
+    .bg-success-light { background-color: #e8f5e9; }
+    .bg-danger-light { background-color: #ffebee; }
 
-    <div class="col-md-3 col-sm-6">
-        <div class="card card-orgflow p-3 h-100 stat-card">
-            <div class="d-flex align-items-center justify-content-between">
-                <div>
-                    <span class="text-muted small fw-semibold">PENDING TASKS</span>
-                    <h3 class="fw-bold my-1 text-danger">5</h3>
-                    <small class="text-danger fw-semibold"><i class="bi bi-exclamation-circle me-1"></i>Requires Action</small>
-                </div>
-                <div class="stat-icon bg-danger-light">
-                    <i class="bi bi-check2-square fs-3 text-danger"></i>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    /* ================================================= */
+    /* QUICK ACTION TILES                                */
+    /* ================================================= */
+    .quick-action-tile {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        background-color: #ffffff;
+        border: 1.5px solid rgba(107, 46, 30, 0.16) !important;
+        border-radius: 12px;
+        text-decoration: none !important;
+        transition: all 0.25s cubic-bezier(0.165, 0.84, 0.44, 1);
+        box-shadow: 0 2px 6px rgba(107, 46, 30, 0.04);
+        position: relative;
+    }
 
-<!-- Main Content Grid -->
-<div class="row g-4">
-    <div class="col-lg-8">
-        <!-- Announcements -->
-        <div class="card card-orgflow mb-4">
-            <div class="card-header card-header-org d-flex align-items-center justify-content-between py-3">
-                <span><i class="bi bi-megaphone-fill me-2"></i>Official Announcement</span>
-                <span class="badge badge-org">Latest</span>
-            </div>
-            <div class="card-body p-4">
-                <p class="card-text fs-6 lead text-dark">{{ recent_announcement }}</p>
-                <div class="d-flex align-items-center text-muted small mt-3">
-                    <i class="bi bi-clock me-1"></i> Posted by Secretary • 2 hours ago
-                </div>
-            </div>
-        </div>
+    .tile-icon-box {
+        width: 48px;
+        height: 48px;
+        min-width: 48px;
+        border-radius: 10px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.25s ease;
+    }
 
-        <!-- Quick Actions -->
-        <div class="card card-orgflow p-4">
-            <h5 class="fw-bold mb-3 text-garnet"><i class="bi bi-lightning-charge-fill me-2 text-gold"></i>Management Actions</h5>
-            <div class="row g-2">
-                <div class="col-md-4">
-                    <button class="btn btn-outline-dark w-100 py-2 text-start fw-semibold action-btn" onclick="alertAction('Activity creation module')">
-                        <i class="bi bi-plus-circle-fill me-2 text-maroon"></i>New Event
-                    </button>
-                </div>
-                <div class="col-md-4">
-                    <button class="btn btn-outline-dark w-100 py-2 text-start fw-semibold action-btn" onclick="alertAction('Financial expense log')">
-                        <i class="bi bi-journal-plus me-2 text-gold"></i>Record Expense
-                    </button>
-                </div>
-                <div class="col-md-4">
-                    <button class="btn btn-outline-dark w-100 py-2 text-start fw-semibold action-btn" onclick="alertAction('Member roster directory')">
-                        <i class="bi bi-person-plus-fill me-2 text-garnet"></i>Add Member
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
+    .tile-title {
+        color: #6B2E1E !important;
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 0.15rem;
+        transition: color 0.2s ease;
+    }
 
-    <!-- Sidebar -->
-    <div class="col-lg-4">
-        <div class="card card-orgflow p-4">
-            <h5 class="fw-bold mb-3 text-garnet"><i class="bi bi-info-circle-fill me-2 text-maroon"></i>Organization Info</h5>
-            <p class="small text-muted mb-3">
-                OrgFlow centralizes event planning, membership tracking, and financial transparency for student organizations.
+    .tile-subtitle {
+        color: #6c757d !important;
+        font-size: 0.8rem;
+        margin-bottom: 0;
+        transition: color 0.2s ease;
+    }
+
+    .quick-action-tile:hover {
+        background-color: #FFF9EE !important;
+        border-color: #DAA520 !important;
+        transform: translateY(-3px);
+        box-shadow: 0 8px 20px rgba(107, 46, 30, 0.12) !important;
+    }
+
+    .quick-action-tile:hover .tile-title {
+        color: #990000 !important;
+    }
+
+    .quick-action-tile:hover .tile-subtitle {
+        color: #343a40 !important;
+    }
+
+    .quick-action-tile:hover .tile-icon-box {
+        transform: scale(1.08);
+    }
+
+    /* ================================================= */
+    /* MY CLUBS SIDEBAR ITEMS (FIXED ROLE VISIBILITY)    */
+    /* ================================================= */
+    .club-list-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0.75rem 0.9rem;
+        border-radius: 10px;
+        text-decoration: none !important;
+        background-color: #FFFFFF;
+        border: 1.5px solid rgba(107, 46, 30, 0.1) !important;
+        transition: all 0.2s ease-in-out;
+        margin-bottom: 0.4rem;
+    }
+
+    .club-name {
+        color: #495057;
+        font-size: 0.88rem;
+        font-weight: 600;
+        transition: color 0.2s ease;
+    }
+
+    .club-dot {
+        font-size: 0.45rem;
+        min-width: 0.45rem;
+    }
+
+    /* Active / Selected Club in List */
+    .club-list-item.active-club {
+        background-color: #FFF7EB !important;
+        border-color: #DAA520 !important;
+    }
+
+    .club-list-item.active-club .club-name {
+        color: #990000 !important;
+        font-weight: 700 !important;
+    }
+
+    /* Hover on Club Item */
+    .club-list-item:hover {
+        background-color: #FAF4E8 !important;
+        border-color: #DAA520 !important;
+        transform: translateX(3px);
+    }
+
+    .club-list-item:hover .club-name {
+        color: #990000 !important;
+    }
+
+    /* Solid High-Contrast Role Badges */
+    .club-badge {
+        font-size: 0.68rem;
+        font-weight: 700;
+        padding: 0.3rem 0.6rem;
+        border-radius: 6px;
+        white-space: nowrap;
+        letter-spacing: 0.2px;
+        display: inline-block;
+    }
+
+    .badge-president {
+        background-color: #990000 !important;
+        color: #FFFFFF !important;
+        border: 1px solid #7a0000;
+    }
+
+    .badge-officer {
+        background-color: #DAA520 !important;
+        color: #6B2E1E !important;
+        border: 1px solid #b88a18;
+    }
+
+    .badge-member {
+        background-color: #6c757d !important;
+        color: #FFFFFF !important;
+    }
+</style>
+
+{% if not has_organizations %}
+    <!-- ZERO-STATE -->
+    <div class="card card-orgflow p-5 text-center mb-4 welcome-banner text-white shadow-sm">
+        <div class="py-4">
+            <i class="bi bi-compass display-3 text-warning mb-3 d-block"></i>
+            <h2 class="fw-bold mb-2">Welcome to OrgFlow, {{ user.profile.full_name|default:user.username }}!</h2>
+            <p class="lead text-white-50 mx-auto mb-4" style="max-width: 600px;">
+                You are not a member of any student organization yet. Discover active campus groups or register your own organization to start tracking your impact.
             </p>
-            <ul class="list-group list-group-flush small">
-                <li class="list-group-item d-flex justify-content-between px-0">
-                    <span class="text-muted">Database Backend:</span>
-                    <span class="badge bg-primary">Supabase PostgreSQL</span>
-                </li>
-                <li class="list-group-item d-flex justify-content-between px-0">
-                    <span class="text-muted">User Session:</span>
-                    <span class="badge bg-success">Authenticated</span>
-                </li>
-            </ul>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a href="{% url 'organizations:directory' %}" class="btn btn-warning fw-bold px-4 py-2 text-dark shadow-sm">
+                    <i class="bi bi-search me-1"></i>Explore Organizations Directory
+                </a>
+                <a href="{% url 'organizations:create' %}" class="btn btn-outline-light px-4 py-2 fw-semibold">
+                    <i class="bi bi-plus-circle me-1"></i>Register New Organization
+                </a>
+            </div>
         </div>
     </div>
-</div>
+
+    <div class="row g-3">
+        <div class="col-md-4">
+            <div class="card card-orgflow p-4 h-100 text-center shadow-sm">
+                <i class="bi bi-diagram-3-fill fs-1 text-maroon mb-2"></i>
+                <h5 class="fw-bold text-garnet">Centralized Roster</h5>
+                <p class="text-muted small mb-0">Join organizations and connect with officers and members across committees.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-orgflow p-4 h-100 text-center shadow-sm">
+                <i class="bi bi-calendar2-check-fill fs-1 text-gold mb-2"></i>
+                <h5 class="fw-bold text-garnet">Activity Tracking</h5>
+                <p class="text-muted small mb-0">Stay informed about campus events, general assemblies, and project milestones.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card card-orgflow p-4 h-100 text-center shadow-sm">
+                <i class="bi bi-award-fill fs-1 text-success mb-2"></i>
+                <h5 class="fw-bold text-garnet">Accreditation Ready</h5>
+                <p class="text-muted small mb-0">Submit requirements directly to the Student Success Office without paperwork.</p>
+            </div>
+        </div>
+    </div>
+
+{% else %}
+    <!-- ACTIVE DASHBOARD -->
+    <div class="card card-orgflow mb-4 p-4 welcome-banner shadow-sm">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                    <span class="badge badge-org px-3 py-1">
+                        <i class="bi bi-building me-1"></i>{{ selected_org.category }}
+                    </span>
+                    <span class="badge {% if selected_membership.role == 'President' %}bg-warning text-dark{% elif selected_membership.role == 'Officer' %}bg-info text-dark{% else %}bg-light text-dark{% endif %} px-3 py-1 fw-bold">
+                        <i class="bi bi-person-badge-fill me-1"></i>{{ selected_membership.role }}
+                    </span>
+                </div>
+                <h2 class="fw-bold mb-1 text-white">{{ selected_org.name }} {% if selected_org.acronym %}({{ selected_org.acronym }}){% endif %}</h2>
+                <p class="mb-0 text-white-50">Operational Workspace & Performance Hub</p>
+            </div>
+
+            <!-- Switcher Dropdown -->
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                {% if user_memberships.count > 1 %}
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm dropdown-toggle fw-bold text-dark px-3 py-2 shadow-sm" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-arrow-left-right me-1 text-maroon"></i>Switch Org ({{ user_memberships.count }})
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                            <li class="dropdown-header small fw-bold text-muted">My Organizations</li>
+                            {% for m in user_memberships %}
+                                <li>
+                                    <a class="dropdown-item d-flex justify-content-between align-items-center py-2 {% if m.organization == selected_org %}active fw-bold{% endif %}" href="?org={{ m.organization.slug }}">
+                                        <span>{{ m.organization.name }}</span>
+                                        <span class="badge bg-secondary ms-2" style="font-size: 0.65rem;">{{ m.role }}</span>
+                                    </a>
+                                </li>
+                            {% endfor %}
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item text-maroon small fw-semibold" href="{% url 'organizations:directory' %}">
+                                    <i class="bi bi-plus-circle me-1"></i>Find More Orgs
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+
+                <a href="{% url 'organizations:detail' slug=selected_org.slug %}" class="btn btn-outline-light btn-sm px-3 py-2 fw-semibold">
+                    <i class="bi bi-box-arrow-up-right me-1"></i>View Org Profile
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Live Metrics Grid -->
+    <div class="row g-3 mb-4">
+        <!-- 1. Total Active Members -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card card-orgflow p-3 h-100 stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small fw-semibold d-block">TOTAL ROSTER</span>
+                        <h3 class="fw-bold my-1 text-maroon">{{ active_members_count }}</h3>
+                        <small class="text-success fw-semibold"><i class="bi bi-check-circle me-1"></i>Active Members</small>
+                    </div>
+                    <div class="stat-icon bg-maroon-light">
+                        <i class="bi bi-people-fill fs-3 text-maroon"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Your Leadership Status -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card card-orgflow p-3 h-100 stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small fw-semibold d-block">YOUR ROLE</span>
+                        <h4 class="fw-bold my-1 text-garnet text-truncate" style="max-width: 140px;">{{ selected_membership.role }}</h4>
+                        <small class="text-gold fw-semibold"><i class="bi bi-shield-check me-1"></i>Official Seat</small>
+                    </div>
+                    <div class="stat-icon bg-gold-light">
+                        <i class="bi bi-person-vcard-fill fs-3 text-gold"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Action Items / Pending Requests -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card card-orgflow p-3 h-100 stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        {% if is_officer %}
+                            <span class="text-muted small fw-semibold d-block">PENDING APPLICANTS</span>
+                            <h3 class="fw-bold my-1 {% if pending_requests_count > 0 %}text-danger{% else %}text-muted{% endif %}">
+                                {{ pending_requests_count }}
+                            </h3>
+                            {% if pending_requests_count > 0 %}
+                                <small class="text-danger fw-semibold"><i class="bi bi-exclamation-circle me-1"></i>Requires Review</small>
+                            {% else %}
+                                <small class="text-success fw-semibold"><i class="bi bi-check2 me-1"></i>All Clear</small>
+                            {% endif %}
+                        {% else %}
+                            <span class="text-muted small fw-semibold d-block">ORGS JOINED</span>
+                            <h3 class="fw-bold my-1 text-garnet">{{ total_orgs_joined }}</h3>
+                            <small class="text-muted fw-semibold"><i class="bi bi-collection me-1"></i>Active Memberships</small>
+                        {% endif %}
+                    </div>
+                    <div class="stat-icon {% if is_officer and pending_requests_count > 0 %}bg-danger-light{% else %}bg-success-light{% endif %}">
+                        {% if is_officer %}
+                            <i class="bi bi-person-plus-fill fs-3 {% if pending_requests_count > 0 %}text-danger{% else %}text-success{% endif %}"></i>
+                        {% else %}
+                            <i class="bi bi-diagram-3-fill fs-3 text-success"></i>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Organization Status -->
+        <div class="col-md-3 col-sm-6">
+            <div class="card card-orgflow p-3 h-100 stat-card">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="text-muted small fw-semibold d-block">STATUS</span>
+                        <h4 class="fw-bold my-1 text-success">{{ selected_org.status }}</h4>
+                        <small class="text-muted fw-semibold"><i class="bi bi-patch-check me-1"></i>Campus Directory</small>
+                    </div>
+                    <div class="stat-icon bg-success-light">
+                        <i class="bi bi-building-check fs-3 text-success"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content Row -->
+    <div class="row g-4">
+        <!-- Left: Quick Management Actions & Mission -->
+        <div class="col-lg-8">
+            <div class="card card-orgflow p-4 mb-4 shadow-sm">
+                <h5 class="fw-bold text-garnet mb-3">
+                    <i class="bi bi-lightning-charge-fill me-2 text-gold"></i>Quick Actions & Management
+                </h5>
+                <div class="row g-3">
+                    {% if is_officer %}
+                        <!-- Roster & Approvals Card -->
+                        <div class="col-md-6">
+                            <a href="{% url 'organizations:manage_members' slug=selected_org.slug %}" class="quick-action-tile h-100">
+                                <div class="tile-icon-box bg-maroon-light">
+                                    <i class="bi bi-people-fill fs-4 text-maroon"></i>
+                                </div>
+                                <div class="overflow-hidden flex-grow-1">
+                                    <h6 class="tile-title text-truncate">Roster & Approvals</h6>
+                                    <p class="tile-subtitle text-truncate">Review join requests & assign roles.</p>
+                                </div>
+                                {% if pending_requests_count > 0 %}
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger shadow-sm">
+                                        {{ pending_requests_count }}
+                                    </span>
+                                {% endif %}
+                            </a>
+                        </div>
+
+                        <!-- Public Org Page Card -->
+                        <div class="col-md-6">
+                            <a href="{% url 'organizations:detail' slug=selected_org.slug %}" class="quick-action-tile h-100">
+                                <div class="tile-icon-box bg-gold-light">
+                                    <i class="bi bi-eye-fill fs-4 text-gold"></i>
+                                </div>
+                                <div class="overflow-hidden flex-grow-1">
+                                    <h6 class="tile-title text-truncate">Public Org Page</h6>
+                                    <p class="tile-subtitle text-truncate">View & share your organization profile.</p>
+                                </div>
+                            </a>
+                        </div>
+                    {% else %}
+                        <!-- Member View: View Roster -->
+                        <div class="col-md-6">
+                            <a href="{% url 'organizations:detail' slug=selected_org.slug %}" class="quick-action-tile h-100">
+                                <div class="tile-icon-box bg-maroon-light">
+                                    <i class="bi bi-people-fill fs-4 text-maroon"></i>
+                                </div>
+                                <div class="overflow-hidden flex-grow-1">
+                                    <h6 class="tile-title text-truncate">Member Directory</h6>
+                                    <p class="tile-subtitle text-truncate">View your fellow officers & members.</p>
+                                </div>
+                            </a>
+                        </div>
+
+                        <!-- Member View: Browse Other Orgs -->
+                        <div class="col-md-6">
+                            <a href="{% url 'organizations:directory' %}" class="quick-action-tile h-100">
+                                <div class="tile-icon-box bg-gold-light">
+                                    <i class="bi bi-search fs-4 text-gold"></i>
+                                </div>
+                                <div class="overflow-hidden flex-grow-1">
+                                    <h6 class="tile-title text-truncate">Explore Clubs</h6>
+                                    <p class="tile-subtitle text-truncate">Discover and join other organizations.</p>
+                                </div>
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Organization Description Card -->
+            <div class="card card-orgflow p-4 shadow-sm">
+                <h5 class="fw-bold text-garnet mb-3">
+                    <i class="bi bi-info-circle-fill me-2 text-maroon"></i>Organization Mission
+                </h5>
+                <p class="text-dark mb-0 leading-relaxed">{{ selected_org.description }}</p>
+            </div>
+        </div>
+        
+        <!-- Right: My Memberships List (REFINED) -->
+        <div class="col-lg-4">
+            <div class="card card-orgflow p-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="fw-bold text-garnet mb-0"><i class="bi bi-collection-fill me-2 text-gold"></i>My Clubs</h5>
+                    <span class="badge bg-light text-dark border">{{ user_memberships.count }} Active</span>
+                </div>
+                
+                <div class="d-flex flex-column gap-1">
+                    {% for m in user_memberships %}
+                        <a href="?org={{ m.organization.slug }}" class="club-list-item {% if m.organization == selected_org %}active-club{% endif %}">
+                            <div class="text-truncate me-2 d-flex align-items-center">
+                                <i class="bi bi-circle-fill me-2 club-dot {% if m.organization == selected_org %}text-maroon{% else %}text-muted{% endif %}"></i>
+                                <span class="club-name text-truncate">{{ m.organization.name }}</span>
+                            </div>
+                            <!-- High-Contrast Role Badge -->
+                            <span class="club-badge {% if m.role == 'President' %}badge-president{% elif m.role == 'Officer' %}badge-officer{% else %}badge-member{% endif %}">
+                                {{ m.role }}
+                            </span>
+                        </a>
+                    {% endfor %}
+                </div>
+
+                <div class="mt-3 pt-3 border-top text-center">
+                    <a href="{% url 'organizations:directory' %}" class="btn btn-outline-dark btn-sm w-100 fw-semibold">
+                        <i class="bi bi-plus-circle me-1"></i>Join Another Organization
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endif %}
 
 <script src="{% static 'js/home/home.js' %}"></script>
 {% endblock %}

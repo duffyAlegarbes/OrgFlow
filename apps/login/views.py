@@ -3,6 +3,10 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import login
 
 def login_view(request):
+    # If user is already authenticated, redirect them to the dashboard
+    if request.user.is_authenticated:
+        return redirect("home:home")
+
     if request.method == "POST":
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():

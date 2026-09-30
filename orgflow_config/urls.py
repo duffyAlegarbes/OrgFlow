@@ -9,9 +9,10 @@ urlpatterns = [
     path('register/', include('apps.register.urls')),
     path('profile/', include('apps.profile.urls')),
     path('settings/', include('apps.user_settings.urls')),
+    path('organizations/', include('apps.organizations.urls')),
+    path('documents/', include('apps.documents.urls')),          # <--- Add this
     path('', include('apps.home.urls')),
 ]
 
-# Enable media file serving for profile pictures
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

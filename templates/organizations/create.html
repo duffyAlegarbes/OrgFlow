@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register Organization - OrgFlow{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/organizations/organizations.css' %}">
+
+<div class="row justify-content-center my-4">
+    <div class="col-lg-8 col-md-10">
+        <div class="card card-orgflow shadow-sm">
+            <div class="card-header card-header-org py-3">
+                <h4 class="mb-0 fs-5"><i class="bi bi-plus-circle-fill me-2 text-warning"></i>Register a Student Organization</h4>
+            </div>
+            
+            <form method="post" enctype="multipart/form-data" class="p-4">
+                {% csrf_token %}
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger py-2 small mb-3" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i> {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <div class="row g-3">
+                    <!-- Organization Name -->
+                    <div class="col-md-8">
+                        <label class="form-label fw-bold small text-garnet">Organization Name <span class="text-danger">*</span></label>
+                        <input type="text" name="name" class="form-control" placeholder="e.g. Computer Science Society" required>
+                    </div>
+
+                    <!-- Acronym -->
+                    <div class="col-md-4">
+                        <label class="form-label fw-bold small text-garnet">Acronym / Short Name</label>
+                        <input type="text" name="acronym" class="form-control" placeholder="e.g. CSS">
+                    </div>
+
+                    <!-- Category -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-garnet">Classification / Category</label>
+                        <select name="category" class="form-select">
+                            {% for key, label in categories %}
+                                <option value="{{ key }}">{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <!-- Contact Email -->
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small text-garnet">Official Contact Email</label>
+                        <input type="email" name="contact_email" class="form-control" placeholder="e.g. css@university.edu.ph">
+                    </div>
+
+                    <!-- Logo Upload -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold small text-garnet">Organization Logo</label>
+                        <input type="file" name="logo" class="form-control" accept="image/*">
+                        <div class="form-text text-muted small">Upload a square PNG or JPG image for the organization profile.</div>
+                    </div>
+
+                    <!-- Description / Mission -->
+                    <div class="col-12">
+                        <label class="form-label fw-bold small text-garnet">Mission & Description <span class="text-danger">*</span></label>
+                        <textarea name="description" class="form-control" rows="5" placeholder="State your organization's mission, general objectives, and core student activities..." required></textarea>
+                    </div>
+                </div>
+
+                <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
+                    <a href="{% url 'organizations:directory' %}" class="btn btn-outline-secondary btn-sm">Cancel</a>
+                    <button type="submit" class="btn btn-org-primary">
+                        <i class="bi bi-check-circle-fill me-1"></i>Submit Organization
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/organizations/organizations.js' %}"></script>
+{% endblock %}

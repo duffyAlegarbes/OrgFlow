@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Organizations Directory - OrgFlow{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/organizations/organizations.css' %}">
+
+<!-- Header Banner -->
+<div class="card card-orgflow mb-4 p-4 welcome-banner text-white">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h2 class="fw-bold mb-1"><i class="bi bi-diagram-3-fill me-2 text-warning"></i>Student Organizations Directory</h2>
+            <p class="mb-0 text-white-50">Discover, join, and collaborate with accredited student groups.</p>
+        </div>
+        <div>
+            <a href="{% url 'organizations:create' %}" class="btn btn-warning fw-bold text-dark px-3 py-2">
+                <i class="bi bi-plus-circle-fill me-1"></i>Register New Organization
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Search & Filter Controls -->
+<div class="card card-orgflow p-3 mb-4">
+    <form method="get" class="row g-2 align-items-center">
+        <div class="col-md-7">
+            <div class="input-group">
+                <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" name="search" class="form-control" placeholder="Search by organization name, acronym, or mission..." value="{{ query }}">
+            </div>
+        </div>
+        <div class="col-md-3">
+            <select name="category" class="form-select">
+                <option value="">All Categories</option>
+                {% for key, label in categories %}
+                    <option value="{{ key }}" {% if selected_category == key %}selected{% endif %}>{{ label }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-md-2 d-flex gap-2">
+            <button type="submit" class="btn btn-org-primary w-100">Filter</button>
+            {% if query or selected_category %}
+                <a href="{% url 'organizations:directory' %}" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
+            {% endif %}
+        </div>
+    </form>
+</div>
+
+<!-- Organization Cards Grid -->
+<div class="row g-4">
+    {% for org in organizations %}
+        <div class="col-lg-4 col-md-6">
+            <div class="card card-orgflow h-100 org-card">
+                <div class="card-body p-4 d-flex flex-column">
+                    <div class="d-flex align-items-center gap-3 mb-3">
+                        {% if org.logo %}
+                            <img src="{{ org.logo.url }}" alt="{{ org.name }}" class="org-logo-thumbnail">
+                        {% else %}
+                            <div class="org-logo-placeholder">
+                                <i class="bi bi-building fs-3 text-white"></i>
+                            </div>
+                        {% endif %}
+                        <div>
+                            <span class="badge bg-gold text-garnet fw-bold mb-1">{{ org.category }}</span>
+                            <h5 class="fw-bold text-garnet mb-0">{{ org.name }}</h5>
+                            {% if org.acronym %}
+                                <span class="text-muted small fw-semibold">({{ org.acronym }})</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <p class="card-text text-muted small flex-grow-1">
+                        {{ org.description|truncatewords:22 }}
+                    </p>
+
+                    <div class="pt-3 border-top d-flex justify-content-between align-items-center">
+                        <small class="text-muted"><i class="bi bi-envelope me-1"></i>{{ org.contact_email|default:"No contact email" }}</small>
+                        <a href="{% url 'organizations:detail' slug=org.slug %}" class="btn btn-outline-dark btn-sm fw-semibold">
+                            View Profile <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% empty %}
+        <div class="col-12">
+            <div class="card card-orgflow text-center p-5">
+                <i class="bi bi-search fs-1 text-muted mb-2"></i>
+                <h5 class="text-garnet fw-bold">No Organizations Found</h5>
+                <p class="text-muted small">No organizations match your current search criteria or category filter.</p>
+                <div>
+                    <a href="{% url 'organizations:directory' %}" class="btn btn-outline-secondary btn-sm me-2">Clear Filters</a>
+                    <a href="{% url 'organizations:create' %}" class="btn btn-org-primary btn-sm">Create Organization</a>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+<script src="{% static 'js/organizations/organizations.js' %}"></script>
+{% endblock %}

@@ -365,8 +365,47 @@
                     <i class="bi bi-lightning-charge-fill me-2 text-gold"></i>Quick Actions & Management
                 </h5>
                 <div class="row g-3">
+                    <!-- 1. Projects & Activities -->
+                    <div class="col-md-6">
+                        <a href="{% url 'projects:list' org_slug=selected_org.slug %}" class="quick-action-tile h-100">
+                            <div class="tile-icon-box bg-maroon-light">
+                                <i class="bi bi-kanban-fill fs-4 text-maroon"></i>
+                            </div>
+                            <div class="overflow-hidden flex-grow-1">
+                                <h6 class="tile-title text-truncate">Projects & Events</h6>
+                                <p class="tile-subtitle text-truncate">Track deliverables, tasks, and budgets.</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- 2. Document Repository -->
+                    <div class="col-md-6">
+                        <a href="{% url 'documents:list' org_slug=selected_org.slug %}" class="quick-action-tile h-100">
+                            <div class="tile-icon-box bg-gold-light">
+                                <i class="bi bi-folder2-open fs-4 text-gold"></i>
+                            </div>
+                            <div class="overflow-hidden flex-grow-1">
+                                <h6 class="tile-title text-truncate">Document Repository</h6>
+                                <p class="tile-subtitle text-truncate">Access CBL, financials & minutes.</p>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- 3. KPI & Student Agenda -->
+                    <div class="col-md-6">
+                        <a href="{% url 'kpi:dashboard' org_slug=selected_org.slug %}" class="quick-action-tile h-100">
+                            <div class="tile-icon-box bg-success-light">
+                                <i class="bi bi-graph-up-arrow fs-4 text-success"></i>
+                            </div>
+                            <div class="overflow-hidden flex-grow-1">
+                                <h6 class="tile-title text-truncate">KPI & Student Agenda</h6>
+                                <p class="tile-subtitle text-truncate">Monitor targets & impact metrics.</p>
+                            </div>
+                        </a>
+                    </div>
+
                     {% if is_officer %}
-                        <!-- Roster & Approvals Card -->
+                        <!-- 4. Officer View: Roster & Approvals -->
                         <div class="col-md-6">
                             <a href="{% url 'organizations:manage_members' slug=selected_org.slug %}" class="quick-action-tile h-100">
                                 <div class="tile-icon-box bg-maroon-light">
@@ -384,41 +423,28 @@
                             </a>
                         </div>
 
-                        <!-- Public Org Page Card -->
+                        <!-- 5. Officer View: Accreditation -->
+                        <div class="col-md-12">
+                            <a href="{% url 'accreditation:org_status' org_slug=selected_org.slug %}" class="quick-action-tile h-100">
+                                <div class="tile-icon-box bg-gold-light">
+                                    <i class="bi bi-patch-check-fill fs-4 text-gold"></i>
+                                </div>
+                                <div class="overflow-hidden flex-grow-1">
+                                    <h6 class="tile-title text-truncate">SSO Institutional Accreditation</h6>
+                                    <p class="tile-subtitle text-truncate">Submit annual compliance paperwork to the Student Success Office.</p>
+                                </div>
+                            </a>
+                        </div>
+                    {% else %}
+                        <!-- 4. Member View: Public Org Page -->
                         <div class="col-md-6">
                             <a href="{% url 'organizations:detail' slug=selected_org.slug %}" class="quick-action-tile h-100">
                                 <div class="tile-icon-box bg-gold-light">
                                     <i class="bi bi-eye-fill fs-4 text-gold"></i>
                                 </div>
                                 <div class="overflow-hidden flex-grow-1">
-                                    <h6 class="tile-title text-truncate">Public Org Page</h6>
-                                    <p class="tile-subtitle text-truncate">View & share your organization profile.</p>
-                                </div>
-                            </a>
-                        </div>
-                    {% else %}
-                        <!-- Member View: View Roster -->
-                        <div class="col-md-6">
-                            <a href="{% url 'organizations:detail' slug=selected_org.slug %}" class="quick-action-tile h-100">
-                                <div class="tile-icon-box bg-maroon-light">
-                                    <i class="bi bi-people-fill fs-4 text-maroon"></i>
-                                </div>
-                                <div class="overflow-hidden flex-grow-1">
-                                    <h6 class="tile-title text-truncate">Member Directory</h6>
-                                    <p class="tile-subtitle text-truncate">View your fellow officers & members.</p>
-                                </div>
-                            </a>
-                        </div>
-
-                        <!-- Member View: Browse Other Orgs -->
-                        <div class="col-md-6">
-                            <a href="{% url 'organizations:directory' %}" class="quick-action-tile h-100">
-                                <div class="tile-icon-box bg-gold-light">
-                                    <i class="bi bi-search fs-4 text-gold"></i>
-                                </div>
-                                <div class="overflow-hidden flex-grow-1">
-                                    <h6 class="tile-title text-truncate">Explore Clubs</h6>
-                                    <p class="tile-subtitle text-truncate">Discover and join other organizations.</p>
+                                    <h6 class="tile-title text-truncate">Organization Profile</h6>
+                                    <p class="tile-subtitle text-truncate">View members & mission overview.</p>
                                 </div>
                             </a>
                         </div>

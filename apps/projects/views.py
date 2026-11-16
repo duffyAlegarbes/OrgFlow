@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from apps.organizations.models import Organization, OrganizationMembership
 from .models import Project, ProjectActivity
+from apps.notifications.models import Notification
 
 @login_required(login_url='login:login')
 def project_list_view(request, org_slug):
@@ -172,6 +173,12 @@ def activity_add_view(request, project_id):
                 assigned_to=assigned_user,
                 status='Pending'
             )
+            if assigned_user and assigned_user != request.user:
+                Notification.objects.create(
+                    recipient=assigned_user,
+                    notification_type='Project Task',
+                    message=f"You were assigned a new task '{title}' in project '{project.title}' ({org.name})."
+                )
             messages.success(request, f"Activity '{title}' added to project!")
 
     return redirect("projects:detail", project_id=project.id)

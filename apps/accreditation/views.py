@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from apps.organizations.models import Organization, OrganizationMembership
 from apps.documents.models import Document
+from apps.notifications.models import Notification
 from .models import (
     AccreditationCycle,
     AccreditationRequirement,
@@ -191,6 +192,13 @@ def sso_review_view(request, submission_id):
         submission.remarks = remarks
         submission.reviewed_by = request.user
         submission.save()
+
+        if submission.submitted_by:
+            Notification.objects.create(
+                recipient=submission.submitted_by,
+                notification_type='Accreditation',
+                message=f"SSO Update for {submission.organization.name} ({submission.cycle.academic_year}): Your accreditation status is now '{submission.status}'."
+            )
 
         return redirect("accreditation:sso_dashboard")
 

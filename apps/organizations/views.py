@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q
 from .models import Organization, OrganizationMembership
+from apps.notifications.models import Notification
 
 @login_required(login_url='login:login')
 def org_directory_view(request):
@@ -195,11 +196,21 @@ def manage_members_view(request, slug):
         elif action == "approve_request":
             target_membership.status = 'Active'
             target_membership.save()
+            Notification.objects.create(
+                recipient=target_membership.user,
+                notification_type='Membership',
+                message=f"Welcome! Your request to join {org.name} has been approved."
+            )
             messages.success(request, f"Approved {target_membership.user.username}'s membership!")
 
         elif action == "reject_request":
             target_membership.status = 'Rejected'
             target_membership.save()
+            Notification.objects.create(
+                recipient=target_membership.user,
+                notification_type='Membership',
+                message=f"Update: Your request to join {org.name} was declined."
+            )
             messages.info(request, f"Rejected {target_membership.user.username}'s membership request.")
 
         return redirect("organizations:manage_members", slug=org.slug)

@@ -151,9 +151,19 @@
 
                 <div class="ms-auto d-flex align-items-center">
                     {% if user.is_authenticated %}
+                        <!-- Notification Bell with Live Badge -->
+                        <a href="{% url 'notifications:list' %}" class="btn btn-outline-light btn-sm position-relative me-3 border-0" title="Notifications">
+                            <i class="bi bi-bell-fill fs-5" style="color: var(--soft-gold);"></i>
+                            {% if unread_notifications_count > 0 %}
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark fw-bold" style="font-size: 0.65rem;">
+                                    {{ unread_notifications_count }}
+                                </span>
+                            {% endif %}
+                        </a>
+
                         <span class="text-white me-3 d-none d-sm-inline">
                             <i class="bi bi-person-badge-fill me-1" style="color: var(--harvest-gold);"></i>
-                            <strong>{{ user.username }}</strong>
+                            <strong>{{ user.profile.full_name|default:user.username }}</strong>
                         </span>
                         <form action="{% url 'login:logout' %}" method="post" style="display:inline;">
                             {% csrf_token %}

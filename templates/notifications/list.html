@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Notifications - OrgFlow{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/notifications/notifications.css' %}">
+
+<div class="row justify-content-center my-4">
+    <div class="col-lg-9">
+
+        <!-- Header -->
+        <div class="card card-orgflow mb-4 p-4 welcome-banner text-white shadow-sm">
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <h2 class="fw-bold mb-1"><i class="bi bi-bell-fill me-2 text-warning"></i>Notifications & Alerts</h2>
+                    <p class="mb-0 text-white-50">Stay updated on membership approvals, delegated tasks, and SSO evaluations.</p>
+                </div>
+                {% if unread_count > 0 %}
+                    <a href="{% url 'notifications:mark_all_read' %}" class="btn btn-warning fw-bold text-dark btn-sm px-3 py-2 shadow-sm">
+                        <i class="bi bi-check2-all me-1"></i>Mark All as Read ({{ unread_count }})
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show py-2 small mb-3" role="alert">
+                    <i class="bi bi-check-circle-fill me-1"></i> {{ message }}
+                    <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Notifications List -->
+        <div class="card card-orgflow shadow-sm">
+            <div class="list-group list-group-flush">
+                {% for n in notifications %}
+                    <div class="list-group-item p-4 d-flex justify-content-between align-items-center flex-wrap gap-3 {% if not n.is_read %}unread-notif{% endif %}">
+                        <div class="d-flex align-items-start gap-3">
+                            <div class="notif-icon-box {% if n.notification_type == 'Accreditation' %}bg-gold-light text-gold{% elif n.notification_type == 'Project Task' %}bg-primary-subtle text-primary{% else %}bg-maroon-light text-maroon{% endif %}">
+                                <i class="bi {% if n.notification_type == 'Accreditation' %}bi-patch-check-fill{% elif n.notification_type == 'Project Task' %}bi-kanban-fill{% else %}bi-person-check-fill{% endif %} fs-5"></i>
+                            </div>
+                            <div>
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="badge bg-light text-dark border small">{{ n.notification_type }}</span>
+                                    {% if not n.is_read %}
+                                        <span class="badge bg-danger">New</span>
+                                    {% endif %}
+                                    <small class="text-muted">{{ n.created_at|timesince }} ago</small>
+                                </div>
+                                <p class="mb-0 {% if not n.is_read %}fw-bold text-dark{% else %}text-muted{% endif %}">
+                                    {{ n.message }}
+                                </p>
+                            </div>
+                        </div>
+
+                        {% if not n.is_read %}
+                            <a href="{% url 'notifications:mark_read' notif_id=n.id %}" class="btn btn-outline-dark btn-sm">
+                                <i class="bi bi-check2 me-1"></i>Mark Read
+                            </a>
+                        {% else %}
+                            <span class="text-success small fw-semibold"><i class="bi bi-check2-all me-1"></i>Read</span>
+                        {% endif %}
+                    </div>
+                {% empty %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-bell-slash fs-1 text-muted d-block mb-2"></i>
+                        <h5 class="fw-bold text-garnet">All Caught Up!</h5>
+                        <p class="text-muted small mb-0">You have no notifications at the moment.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/notifications/notifications.js' %}"></script>
+{% endblock %}

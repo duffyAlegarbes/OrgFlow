@@ -54,6 +54,11 @@
 
         <!-- Action Buttons based on Role & Membership -->
         <div class="d-flex gap-2 flex-wrap">
+            <!-- KPI Tracker Link -->
+            <a href="{% url 'kpi:dashboard' org_slug=org.slug %}" class="btn btn-outline-dark btn-sm fw-semibold">
+                <i class="bi bi-graph-up-arrow me-1 text-gold"></i>KPIs
+            </a>
+            
             <!-- Accreditation Workspace Link -->
             <a href="{% url 'accreditation:org_status' org_slug=org.slug %}" class="btn btn-outline-dark btn-sm fw-semibold">
                 <i class="bi bi-patch-check-fill me-1 text-gold"></i>Accreditation

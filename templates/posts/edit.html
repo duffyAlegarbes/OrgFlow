@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Edit Post - OrgFlow{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/posts/posts.css' %}">
+
+<div class="row justify-content-center my-4">
+    <div class="col-lg-8 col-md-10">
+        <div class="card card-orgflow shadow-sm">
+            <div class="card-header card-header-org py-3">
+                <h4 class="mb-0 fs-5"><i class="bi bi-pencil-fill me-2 text-warning"></i>Edit Organization Post</h4>
+            </div>
+
+            <form method="post" class="p-4">
+                {% csrf_token %}
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-garnet">Organization</label>
+                    <input type="text" class="form-control bg-light" value="{{ post.organization.name }}" readonly disabled>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-garnet">Headline / Title</label>
+                    <input type="text" name="title" class="form-control" value="{{ post.title }}" required>
+                </div>
+
+                {% if post.post_type == 'Partnership' and post.partnership_details %}
+                    <div class="row g-2 mb-3 p-3 bg-light border border-warning rounded-3">
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-garnet">Target Partner Category</label>
+                            <input type="text" name="target_category" class="form-control form-control-sm" value="{{ post.partnership_details.target_category }}">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label small fw-bold text-garnet">Partnership Status</label>
+                            <select name="partnership_status" class="form-select form-select-sm">
+                                {% for key, label in partnership_statuses %}
+                                    <option value="{{ key }}" {% if post.partnership_details.status == key %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="mb-3">
+                    <label class="form-label fw-bold small text-garnet">Post Body / Details</label>
+                    <textarea name="content" class="form-control" rows="6" required>{{ post.content }}</textarea>
+                </div>
+
+                <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
+                    <a href="{% url 'posts:feed' %}" class="btn btn-outline-secondary btn-sm">Cancel</a>
+                    <button type="submit" class="btn btn-org-primary">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/posts/posts.js' %}"></script>
+{% endblock %}

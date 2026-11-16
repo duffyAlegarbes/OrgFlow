@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Evaluate Submission - {{ submission.organization.name }}{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/accreditation/accreditation.css' %}">
+
+<div class="card card-orgflow mb-4 p-4 shadow-sm">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pb-3 border-bottom">
+        <div>
+            <span class="badge badge-org mb-1">{{ submission.cycle.academic_year }}</span>
+            <h3 class="fw-bold text-garnet mb-0">{{ submission.organization.name }}</h3>
+            <small class="text-muted">Applicant: @{{ submission.submitted_by.username }}</small>
+        </div>
+        <a href="{% url 'accreditation:sso_dashboard' %}" class="btn btn-outline-secondary btn-sm">Back to Desk</a>
+    </div>
+
+    <!-- Submitted Documents Inspection -->
+    <h5 class="fw-bold text-garnet mt-4 mb-3"><i class="bi bi-file-earmark-check me-2 text-maroon"></i>Submitted Legal Documents</h5>
+    <div class="list-group mb-4">
+        {% for sd in submitted_docs %}
+            <div class="list-group-item d-flex justify-content-between align-items-center py-3">
+                <div>
+                    <h6 class="mb-0 fw-bold text-dark">{{ sd.requirement.title }}</h6>
+                    <small class="text-muted"><i class="bi bi-paperclip me-1"></i>File: {{ sd.document.title }}</small>
+                </div>
+                <a href="{{ sd.document.file.url }}" class="btn btn-outline-dark btn-sm" target="_blank" download>
+                    <i class="bi bi-download me-1"></i>Inspect Document
+                </a>
+            </div>
+        {% empty %}
+            <div class="list-group-item text-muted text-center py-4 small">No documents attached to this submission.</div>
+        {% endfor %}
+    </div>
+
+    <!-- Evaluation Form -->
+    <form method="post" class="card p-4 bg-light border rounded-3">
+        {% csrf_token %}
+        <h5 class="fw-bold text-garnet mb-3"><i class="bi bi-award-fill me-2 text-gold"></i>Student Success Office Decision</h5>
+        
+        <div class="mb-3">
+            <label class="form-label small fw-bold text-garnet">Institutional Feedback / Revision Notes</label>
+            <textarea name="remarks" class="form-control" rows="4" placeholder="Detail any missing attachments, corrections required, or congratulations on accreditation...">{{ submission.remarks }}</textarea>
+        </div>
+
+        <div class="d-flex justify-content-end gap-2 flex-wrap">
+            <button type="submit" name="action" value="reject" class="btn btn-danger btn-sm" onclick="return confirm('Reject accreditation application?');">
+                <i class="bi bi-x-circle me-1"></i>Reject
+            </button>
+            <button type="submit" name="action" value="revision" class="btn btn-warning btn-sm fw-bold text-dark">
+                <i class="bi bi-arrow-counterclockwise me-1"></i>Request Revision
+            </button>
+            <button type="submit" name="action" value="approve" class="btn btn-success btn-sm fw-bold">
+                <i class="bi bi-check-circle-fill me-1"></i>Approve & Grant Accreditation
+            </button>
+        </div>
+    </form>
+</div>
+
+<script src="{% static 'js/accreditation/accreditation.js' %}"></script>
+{% endblock %}

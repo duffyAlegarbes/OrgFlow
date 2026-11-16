@@ -54,6 +54,17 @@
 
         <!-- Action Buttons based on Role & Membership -->
         <div class="d-flex gap-2 flex-wrap">
+            <!-- Accreditation Workspace Link -->
+            <a href="{% url 'accreditation:org_status' org_slug=org.slug %}" class="btn btn-outline-dark btn-sm fw-semibold">
+                <i class="bi bi-patch-check-fill me-1 text-gold"></i>Accreditation
+            </a>
+            
+            <!-- Projects Link -->
+            <a href="{% url 'projects:list' org_slug=org.slug %}" class="btn btn-outline-dark btn-sm fw-semibold">
+                <i class="bi bi-kanban-fill me-1 text-gold"></i>Projects
+            </a>
+
+            <!-- Documents Link -->
             <a href="{% url 'documents:list' org_slug=org.slug %}" class="btn btn-outline-dark btn-sm fw-semibold">
                 <i class="bi bi-folder2-open me-1 text-gold"></i>Documents
             </a>

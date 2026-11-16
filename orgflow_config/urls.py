@@ -10,7 +10,9 @@ urlpatterns = [
     path('profile/', include('apps.profile.urls')),
     path('settings/', include('apps.user_settings.urls')),
     path('organizations/', include('apps.organizations.urls')),
-    path('documents/', include('apps.documents.urls')),          # <--- Add this
+    path('documents/', include('apps.documents.urls')),
+    path('projects/', include('apps.projects.urls')),
+    path('accreditation/', include('apps.accreditation.urls')),
     path('', include('apps.home.urls')),
 ]
 

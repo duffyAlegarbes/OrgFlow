@@ -5,6 +5,15 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/user_settings/user_settings.css' %}">
+<style>
+    .cit-hero-banner { background: linear-gradient(135deg, #FFFDF7 0%, #FFF1C2 55%, #F2C21A 100%); border: 1px solid #EFE0B1; border-radius: 20px; box-shadow: 0 10px 28px rgba(128,29,29,0.08); }
+    .section-title { font-family: 'Montserrat', sans-serif; font-weight: 700; color: #2D1212; margin-bottom: 0.25rem; font-size: 1.02rem; }
+    .form-check-input:checked { background-color: #801D1D; border-color: #801D1D; }
+    .form-check-input:focus { border-color: #F2C21A; box-shadow: 0 0 0 0.25rem rgba(242,194,26,0.25); }
+    .cit-input { background-color: #F8F9FA; border: 1.5px solid #E2E5E9; border-radius: 10px; }
+    .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+    #saveSettingsBtn:disabled { background-color: #b0a59b !important; border-color: #9d9389 !important; color: #ffffff !important; opacity: 0.55 !important; filter: grayscale(100%) !important; cursor: not-allowed !important; pointer-events: auto !important; transform: none !important; box-shadow: none !important; }
+</style>
 
 <div class="row justify-content-center my-4">
     <div class="col-lg-9 col-md-11">
@@ -12,7 +21,7 @@
         <!-- Alerts -->
         {% if messages %}
             {% for message in messages %}
-                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show py-2 small mb-3" role="alert">
+                <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show py-2 small mb-3 rounded-3" role="alert">
                     <i class="bi {% if message.tags == 'error' %}bi-exclamation-triangle-fill{% else %}bi-check-circle-fill{% endif %} me-1"></i>
                     {{ message }}
                     <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
@@ -24,20 +33,30 @@
             {% csrf_token %}
             <input type="hidden" name="save_preferences" value="1">
 
-            <div class="card card-orgflow shadow-sm mb-4">
-                <div class="card-header card-header-org py-3 d-flex justify-content-between align-items-center">
-                    <h4 class="mb-0 fs-5"><i class="bi bi-sliders me-2"></i>OrgFlow System Preferences</h4>
-                    <button type="submit" class="btn btn-org-outline btn-sm" id="saveSettingsBtn" disabled>
-                        <i class="bi bi-save me-1"></i>Save Changes
+            <!-- Warm Golden CIT.edu Settings Header -->
+            <div class="cit-hero-banner p-4 mb-4">
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                    <div>
+                        <h2 class="fw-bold mb-1" style="color: #2D1212;">
+                            <i class="bi bi-sliders me-2" style="color: #801D1D;"></i>System Preferences &amp; Security
+                        </h2>
+                        <p class="mb-0 small fw-medium" style="color: #4A3728;">
+                            Manage notification preferences, interface appearance, and account password security.
+                        </p>
+                    </div>
+                    <button type="submit" class="btn btn-org-primary px-4 py-2" id="saveSettingsBtn" disabled>
+                        <i class="bi bi-save"></i><span>Save Changes</span>
                     </button>
                 </div>
+            </div>
 
-                <div class="card-body p-4">
+            <div class="card card-orgflow mb-4">
+                <div class="card-body p-4 p-lg-5">
 
                     <!-- 1. NOTIFICATIONS & REMINDERS -->
                     <div class="settings-section mb-4">
                         <h6 class="section-title">
-                            <i class="bi bi-bell-fill me-2 text-gold"></i>Notification & Alert Channels
+                            <i class="bi bi-bell-fill me-2" style="color: #801D1D;"></i>Notification &amp; Alert Channels
                         </h6>
                         <p class="text-muted small">Control automated email notifications for organizational activities.</p>
 
@@ -45,7 +64,7 @@
                             <!-- Email Notifications -->
                             <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
                                 <div>
-                                    <h6 class="mb-1 text-garnet fw-bold">Email Event Announcements</h6>
+                                    <h6 class="mb-1 text-dark fw-bold">Email Event Announcements</h6>
                                     <p class="text-muted small mb-0">Receive email digests when an officer publishes an official event.</p>
                                 </div>
                                 <div class="form-check form-switch ms-3">
@@ -56,7 +75,7 @@
                             <!-- Task Deadline Reminders -->
                             <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
                                 <div>
-                                    <h6 class="mb-1 text-garnet fw-bold">Task Deadline Reminders</h6>
+                                    <h6 class="mb-1 text-dark fw-bold">Task Deadline Reminders</h6>
                                     <p class="text-muted small mb-0">Get alerted 24 hours before your assigned committee deliverables are due.</p>
                                 </div>
                                 <div class="form-check form-switch ms-3">
@@ -69,7 +88,7 @@
                     <!-- 2. DISPLAY & LOCALIZATION -->
                     <div class="settings-section mb-4">
                         <h6 class="section-title">
-                            <i class="bi bi-palette-fill me-2 text-maroon"></i>Display & System Interface
+                            <i class="bi bi-palette-fill me-2" style="color: #C99A08;"></i>Display &amp; System Interface
                         </h6>
                         <p class="text-muted small">Customize how dashboards and metrics are rendered for your device.</p>
 
@@ -77,7 +96,7 @@
                             <!-- Dark Mode -->
                             <div class="list-group-item bg-transparent d-flex justify-content-between align-items-center py-3">
                                 <div>
-                                    <h6 class="mb-1 text-garnet fw-bold">Dark Mode Theme</h6>
+                                    <h6 class="mb-1 text-dark fw-bold">Dark Mode Theme</h6>
                                     <p class="text-muted small mb-0">Adjust contrast for low-light management sessions.</p>
                                 </div>
                                 <div class="form-check form-switch ms-3">
@@ -90,17 +109,17 @@
                     <!-- 3. SECURITY & ACCOUNT CREDENTIALS -->
                     <div class="settings-section">
                         <h6 class="section-title">
-                            <i class="bi bi-key-fill me-2 text-maroon"></i>Security & Session
+                            <i class="bi bi-key-fill me-2" style="color: #801D1D;"></i>Security &amp; Session
                         </h6>
                         <p class="text-muted small">Manage authentication safety and credentials.</p>
 
                         <div class="border rounded-3 p-3 bg-light d-flex justify-content-between align-items-center flex-wrap gap-2">
                             <div>
-                                <h6 class="mb-1 text-garnet fw-bold">Account Password</h6>
+                                <h6 class="mb-1 text-dark fw-bold">Account Password</h6>
                                 <p class="text-muted small mb-0">Change your password periodically to keep organizational records secure.</p>
                             </div>
-                            <button type="button" class="btn btn-outline-dark btn-sm fw-semibold" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
-                                <i class="bi bi-lock-fill me-1"></i>Change Password
+                            <button type="button" class="btn btn-org-outline btn-sm" data-bs-toggle="modal" data-bs-target="#changePasswordModal">
+                                <i class="bi bi-lock-fill"></i><span>Change Password</span>
                             </button>
                         </div>
                     </div>
@@ -114,10 +133,10 @@
 <!-- Change Password Modal -->
 <div class="modal fade" id="changePasswordModal" tabindex="-1" aria-labelledby="changePasswordModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content card-orgflow border-0">
+        <div class="modal-content card-orgflow border-0 overflow-hidden">
             <div class="modal-header card-header-org py-3">
                 <h5 class="modal-title fs-5" id="changePasswordModalLabel">
-                    <i class="bi bi-shield-lock-fill me-2" style="color: var(--harvest-gold);"></i>Update Account Password
+                    <i class="bi bi-shield-lock-fill me-2 text-warning"></i>Update Account Password
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -125,9 +144,9 @@
                 {% csrf_token %}
                 <input type="hidden" name="change_password" value="1">
                 
-                <div class="modal-body p-4">
+                <div class="modal-body p-4 bg-white">
                     {% if password_form.errors %}
-                        <div class="alert alert-danger py-2 small">
+                        <div class="alert alert-danger py-2 small rounded-3">
                             <ul class="mb-0 ps-3">
                                 {% for field in password_form %}
                                     {% for error in field.errors %}
@@ -143,8 +162,8 @@
 
                     {% for field in password_form %}
                         <div class="mb-3">
-                            <label for="{{ field.id_for_label }}" class="form-label small fw-bold text-garnet">{{ field.label }}</label>
-                            <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control form-control-sm" required>
+                            <label for="{{ field.id_for_label }}" class="form-label small fw-bold text-dark">{{ field.label }}</label>
+                            <input type="password" name="{{ field.name }}" id="{{ field.id_for_label }}" class="form-control form-control-sm cit-input" required>
                             {% if field.help_text %}
                                 <div class="form-text text-muted" style="font-size: 0.75rem;">
                                     {{ field.help_text|safe }}
@@ -155,9 +174,9 @@
                 </div>
 
                 <div class="modal-footer bg-light py-2">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-light border rounded-pill btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-org-primary btn-sm">
-                        <i class="bi bi-check-circle-fill me-1"></i>Update Password
+                        <i class="bi bi-check-circle-fill"></i><span>Update Password</span>
                     </button>
                 </div>
             </form>

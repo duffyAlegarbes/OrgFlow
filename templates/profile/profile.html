@@ -5,95 +5,120 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/profile/profile.css' %}">
+<style>
+    .cit-profile-hero { background: linear-gradient(135deg, #FFFDF7 0%, #FFF1C2 55%, #F2C21A 100%); border-bottom: 1px solid #EFE0B1; }
+    .cit-pill-maroon { background-color: #801D1D !important; color: #FFFFFF !important; font-weight: 700; border-radius: 999px; }
+    .cit-pill-gold { background-color: #F2C21A !important; color: #1F1F1F !important; font-weight: 800; border-radius: 999px; border: 1px solid #DAA90F; }
+    .profile-avatar-container { width: 100px; height: 100px; min-width: 100px; position: relative; border-radius: 50%; border: 3px solid #801D1D; outline: 3px solid #F2C21A; overflow: hidden; cursor: pointer; box-shadow: 0 6px 16px rgba(128,29,29,0.2); }
+    .profile-img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .profile-fallback { width: 100%; height: 100%; background: linear-gradient(135deg, #801D1D, #5E1212); display: flex; align-items: center; justify-content: center; }
+    .avatar-hover-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(128,29,29,0.78); color: #FFF9E6; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.25s ease-in-out; }
+    .avatar-hover-text { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .profile-avatar-container:hover .avatar-hover-overlay { opacity: 1; }
+    .cit-input { background-color: #F8F9FA; border: 1.5px solid #E2E5E9; border-radius: 10px; }
+    .cit-detail-box { background-color: #F8F8F9; border: 1px solid #E5E7EB; border-radius: 12px; }
+    .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+    #saveProfileBtn:disabled { background-color: #b0a59b !important; border-color: #9d9389 !important; color: #ffffff !important; opacity: 0.55 !important; filter: grayscale(100%) !important; cursor: not-allowed !important; pointer-events: auto !important; transform: none !important; box-shadow: none !important; }
+</style>
 
 <div class="row justify-content-center my-4">
-    <div class="col-md-8">
-        <div class="card card-orgflow">
-            <div class="card-header card-header-org py-3 d-flex justify-content-between align-items-center">
-                <h4 class="mb-0 fs-5"><i class="bi bi-mortarboard-fill me-2"></i>Officer Profile</h4>
-                <!-- Edit Profile Button -->
-                <button type="button" class="btn btn-org-outline btn-sm" data-bs-toggle="modal" data-bs-target="#editProfileModal">
-                    <i class="bi bi-pencil-square me-1"></i>Edit Details
-                </button>
-            </div>
-            <div class="card-body p-4">
+    <div class="col-lg-9 col-md-10">
 
-                <!-- Alert Messages -->
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class="alert alert-success alert-dismissible fade show py-2 small" role="alert">
-                            <i class="bi bi-check-circle-fill me-1"></i> {{ message }}
-                            <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
-                        </div>
-                    {% endfor %}
-                {% endif %}
+        <!-- Alert Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show py-2 small mb-3 rounded-3" role="alert">
+                    <i class="bi bi-check-circle-fill me-1"></i> {{ message }}
+                    <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
 
-                <!-- Hidden Form for Image Upload -->
-                <form method="post" enctype="multipart/form-data" id="avatarForm" class="d-none">
-                    {% csrf_token %}
-                    <input type="file" name="profile_image" id="profileImageInput" accept="image/*">
-                </form>
+        <!-- Hidden Form for Image Upload -->
+        <form method="post" enctype="multipart/form-data" id="avatarForm" class="d-none">
+            {% csrf_token %}
+            <input type="file" name="profile_image" id="profileImageInput" accept="image/*">
+        </form>
 
-                <!-- Profile Header -->
-                <div class="d-flex align-items-center gap-4 flex-wrap pb-4 border-bottom">
-                    
-                    <!-- Clickable Avatar with Hover Overlay -->
-                    <div class="profile-avatar-container" id="avatarContainer" title="Click to change profile picture">
-                        {% if profile.profile_image %}
-                            <img src="{{ profile.profile_image.url }}" alt="Profile Photo" class="profile-img">
-                        {% else %}
-                            <div class="profile-fallback">
-                                <i class="bi bi-person-fill display-4 text-white"></i>
+        <div class="card card-orgflow overflow-hidden">
+            <!-- Warm Golden CIT.edu Profile Hero Header -->
+            <div class="cit-profile-hero p-4 p-lg-5">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-4">
+                    <div class="d-flex align-items-center gap-4 flex-wrap">
+                        <!-- Clickable Avatar with Hover Overlay -->
+                        <div class="profile-avatar-container" id="avatarContainer" title="Click to change profile picture">
+                            {% if profile.profile_image %}
+                                <img src="{{ profile.profile_image.url }}" alt="Profile Photo" class="profile-img">
+                            {% else %}
+                                <div class="profile-fallback">
+                                    <i class="bi bi-person-fill display-4 text-warning"></i>
+                                </div>
+                            {% endif %}
+                            
+                            <div class="avatar-hover-overlay">
+                                <i class="bi bi-camera-fill fs-3"></i>
+                                <span class="avatar-hover-text">Change</span>
                             </div>
-                        {% endif %}
-                        
-                        <div class="avatar-hover-overlay">
-                            <i class="bi bi-camera-fill fs-3"></i>
-                            <span class="avatar-hover-text">Change</span>
+                        </div>
+
+                        <div>
+                            <!-- Highlighted Full Name -->
+                            <h2 class="fw-bold mb-1" style="color: #2D1212;">
+                                {{ profile.full_name|default:user.username }}
+                            </h2>
+                            
+                            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                                <span class="badge cit-pill-maroon px-3 py-1">
+                                    <i class="bi bi-at me-1 text-warning"></i>{{ user.username }}
+                                </span>
+                                <span class="badge cit-pill-gold px-3 py-1">
+                                    Student Officer
+                                </span>
+                            </div>
+
+                            <span class="small fw-medium" style="color: #4A3728;">
+                                <i class="bi bi-envelope-fill me-1" style="color: #801D1D;"></i>{{ user.email|default:"No institutional email provided" }}
+                            </span>
                         </div>
                     </div>
 
+                    <!-- Edit Details Button -->
                     <div>
-                        <!-- HIGHLIGHTED FULL NAME AS PRIMARY -->
-                        <h2 class="fw-bold mb-1 text-garnet">
-                            {{ profile.full_name|default:user.username }}
-                        </h2>
-                        
-                        <div class="d-flex align-items-center gap-2 mb-2">
-                            <span class="badge bg-secondary-subtle text-dark border px-2 py-1">
-                                <i class="bi bi-at me-1"></i>{{ user.username }}
-                            </span>
-                            <span class="badge bg-gold text-garnet fw-bold px-2 py-1">
-                                Student Officer
-                            </span>
-                        </div>
-
-                        <span class="text-muted small">
-                            <i class="bi bi-envelope me-1 text-maroon"></i>{{ user.email|default:"No institutional email provided" }}
-                        </span>
+                        <button type="button" class="btn btn-org-primary btn-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#editProfileModal">
+                            <i class="bi bi-pencil-square"></i><span>Edit Details</span>
+                        </button>
                     </div>
                 </div>
+            </div>
 
-                <!-- Profile Details Display -->
-                <div class="row g-3 mt-3">
+            <!-- Profile Details Display -->
+            <div class="card-body p-4 p-lg-5 bg-white">
+                <div class="row g-3">
                     <div class="col-md-6">
-                        <label class="form-label text-muted small mb-1">Permanent Username / ID</label>
-                        <p class="fw-semibold fs-6 text-dark mb-0 font-monospace">{{ user.username }}</p>
+                        <div class="cit-detail-box p-3 h-100">
+                            <label class="form-label text-muted small fw-bold text-uppercase mb-1">Permanent Username / ID</label>
+                            <p class="fw-bold fs-6 text-dark mb-0 font-monospace">@{{ user.username }}</p>
+                        </div>
                     </div>
                     <div class="col-md-6">
-                        <label class="form-label text-muted small mb-1">Member Since</label>
-                        <p class="fw-semibold fs-6 text-dark mb-0">{{ user.date_joined|date:"F d, Y" }}</p>
+                        <div class="cit-detail-box p-3 h-100">
+                            <label class="form-label text-muted small fw-bold text-uppercase mb-1">Member Since</label>
+                            <p class="fw-bold fs-6 text-dark mb-0">{{ user.date_joined|date:"F d, Y" }}</p>
+                        </div>
                     </div>
                     <div class="col-12">
-                        <label class="form-label text-muted small mb-1">Position & Bio</label>
-                        <div class="p-3 bg-light rounded-3 text-dark">
-                            {{ profile.bio|default:"No position description or biography set yet. Click 'Edit Details' to specify your role." }}
+                        <div class="cit-detail-box p-3">
+                            <label class="form-label text-muted small fw-bold text-uppercase mb-1">Position &amp; Biography</label>
+                            <p class="text-dark mb-0">
+                                {{ profile.bio|default:"No position description or biography set yet. Click 'Edit Details' to specify your role." }}
+                            </p>
                         </div>
                     </div>
                 </div>
 
-                <div class="mt-4 pt-3 border-top d-flex justify-content-end gap-2">
-                    <a href="{% url 'home:home' %}" class="btn btn-outline-secondary btn-sm">
+                <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <small class="text-muted"><i class="bi bi-info-circle me-1"></i>Click your profile circle above anytime to update your photo.</small>
+                    <a href="{% url 'home:home' %}" class="btn btn-light btn-sm rounded-pill border px-3 fw-semibold">
                         <i class="bi bi-arrow-left me-1"></i>Back to Dashboard
                     </a>
                 </div>
@@ -105,10 +130,10 @@
 <!-- Edit Profile Modal -->
 <div class="modal fade" id="editProfileModal" tabindex="-1" aria-labelledby="editProfileModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content card-orgflow border-0">
+        <div class="modal-content card-orgflow border-0 overflow-hidden">
             <div class="modal-header card-header-org py-3">
                 <h5 class="modal-title fs-5" id="editProfileModalLabel">
-                    <i class="bi bi-pencil-fill me-2" style="color: var(--harvest-gold);"></i>Edit Officer Credentials
+                    <i class="bi bi-pencil-fill me-2 text-warning"></i>Edit Officer Credentials
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
@@ -116,37 +141,33 @@
                 {% csrf_token %}
                 <input type="hidden" name="update_profile" value="1">
                 
-                <div class="modal-body p-4">
-                    <!-- Full Name (Primary Field) -->
+                <div class="modal-body p-4 bg-white">
                     <div class="mb-3">
-                        <label for="fullNameInput" class="form-label">Full Name</label>
-                        <input type="text" class="form-control" id="fullNameInput" name="full_name" value="{{ profile.full_name }}" placeholder="e.g. Juan Dela Cruz" required>
+                        <label for="fullNameInput" class="form-label small fw-bold text-dark">Full Name</label>
+                        <input type="text" class="form-control cit-input" id="fullNameInput" name="full_name" value="{{ profile.full_name }}" placeholder="e.g. Juan Dela Cruz" required>
                         <div class="form-text text-muted small">Your official student name displayed across organization records.</div>
                     </div>
 
-                    <!-- Permanent Username (Locked) -->
                     <div class="mb-3">
-                        <label class="form-label text-muted small">Username (Permanent Account ID)</label>
-                        <input type="text" class="form-control bg-light font-monospace text-muted" value="{{ user.username }}" readonly disabled>
+                        <label class="form-label text-muted small fw-bold">Username (Permanent Account ID)</label>
+                        <input type="text" class="form-control cit-input bg-light font-monospace text-muted" value="{{ user.username }}" readonly disabled>
                     </div>
 
-                    <!-- Institutional Email -->
                     <div class="mb-3">
-                        <label for="emailInput" class="form-label">Institutional Email Address</label>
-                        <input type="email" class="form-control" id="emailInput" name="email" value="{{ user.email }}" placeholder="e.g. officer@university.edu.ph">
+                        <label for="emailInput" class="form-label small fw-bold text-dark">Institutional Email Address</label>
+                        <input type="email" class="form-control cit-input" id="emailInput" name="email" value="{{ user.email }}" placeholder="e.g. officer@university.edu.ph">
                     </div>
 
-                    <!-- Position & Bio -->
                     <div class="mb-3">
-                        <label for="bioInput" class="form-label">Officer Position & Responsibilities</label>
-                        <textarea class="form-control" id="bioInput" name="bio" rows="4" placeholder="e.g. Committee Head for Logistics, Lead Coordinator...">{{ profile.bio }}</textarea>
+                        <label for="bioInput" class="form-label small fw-bold text-dark">Officer Position &amp; Responsibilities</label>
+                        <textarea class="form-control cit-input" id="bioInput" name="bio" rows="4" placeholder="e.g. Committee Head for Logistics, Lead Coordinator...">{{ profile.bio }}</textarea>
                     </div>
                 </div>
 
                 <div class="modal-footer bg-light py-2">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-light border rounded-pill btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-org-primary btn-sm" id="saveProfileBtn" disabled>
-                        <i class="bi bi-save me-1"></i>Save Changes
+                        <i class="bi bi-save"></i><span>Save Changes</span>
                     </button>
                 </div>
             </form>

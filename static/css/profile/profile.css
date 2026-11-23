@@ -1,13 +1,36 @@
+/* CIT.edu Inspired Profile Slice Styles */
+.cit-profile-hero {
+    background: linear-gradient(135deg, #FFFDF7 0%, #FFF1C2 55%, #F2C21A 100%);
+    border-bottom: 1px solid #EFE0B1;
+}
+
+.cit-pill-maroon {
+    background-color: #801D1D !important;
+    color: #FFFFFF !important;
+    font-weight: 700;
+    border-radius: 999px;
+}
+
+.cit-pill-gold {
+    background-color: #F2C21A !important;
+    color: #1F1F1F !important;
+    font-weight: 800;
+    border-radius: 999px;
+    border: 1px solid #DAA90F;
+}
+
 /* Profile Avatar Container */
 .profile-avatar-container {
     width: 100px;
     height: 100px;
+    min-width: 100px;
     position: relative;
     border-radius: 50%;
-    border: 3px solid #DAA520;
+    border: 3px solid #801D1D;
+    outline: 3px solid #F2C21A;
     overflow: hidden;
     cursor: pointer;
-    box-shadow: 0 4px 10px rgba(107, 46, 30, 0.2);
+    box-shadow: 0 6px 16px rgba(128, 29, 29, 0.2);
 }
 
 .profile-img {
@@ -20,7 +43,7 @@
 .profile-fallback {
     width: 100%;
     height: 100%;
-    background-color: #990000;
+    background: linear-gradient(135deg, #801D1D, #5E1212);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -33,8 +56,8 @@
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(107, 46, 30, 0.75);
-    color: #F6E6C9;
+    background-color: rgba(128, 29, 29, 0.78);
+    color: #FFF9E6;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -54,17 +77,16 @@
     opacity: 1;
 }
 
-.bg-gold {
-    background-color: #DAA520 !important;
+.cit-input {
+    background-color: #F8F9FA;
+    border: 1.5px solid #E2E5E9;
+    border-radius: 10px;
 }
 
-.text-garnet {
-    color: #6B2E1E !important;
-}
-
-/* Modal Styling */
-.modal-content {
-    background-color: #FFFFFF;
+.cit-detail-box {
+    background-color: #F8F8F9;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
 }
 
 .btn-close-white {
@@ -72,13 +94,14 @@
 }
 
 /* Unsaturated Disabled State for Save Changes Button */
-#saveProfileBtn:disabled,
-.btn-org-primary:disabled {
+#saveProfileBtn:disabled {
     background-color: #b0a59b !important;
     border-color: #9d9389 !important;
     color: #ffffff !important;
     opacity: 0.55 !important;
     filter: grayscale(100%) !important;
     cursor: not-allowed !important;
-    pointer-events: auto !important; /* Ensures the 'not-allowed' cursor shows on hover */
+    pointer-events: auto !important;
+    transform: none !important;
+    box-shadow: none !important;
 }

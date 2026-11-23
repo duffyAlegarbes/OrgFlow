@@ -3,176 +3,367 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}OrgFlow{% endblock %}</title>
+    <title>{% block title %}OrgFlow – CIT-U Student Organizations{% endblock %}</title>
     
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Google Fonts & Bootstrap Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Google Fonts (Plus Jakarta Sans & Montserrat for CIT-U style headings) -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
 
     <style>
         :root {
-            --soft-gold: #F6E6C9;
-            --harvest-gold: #DAA520;
-            --crimson-maroon: #990000;
-            --deep-garnet: #6B2E1E;
+            /* Official CIT-U Inspired Brand Tokens */
+            --cit-maroon: #801D1D;
+            --cit-maroon-dark: #5E1212;
+            --cit-gold: #F2C21A;
+            --cit-gold-hover: #DAA90F;
+            --cit-bg: #F6F6F7;
+            --cit-surface: #FFFFFF;
+            --cit-tile: #F2F2F3;
+            --cit-ink: #1F1F1F;
+            --cit-muted: #5F6368;
+            --cit-border: #E5E7EB;
+
+            /* Backward-compatible aliases so existing slices never break */
+            --soft-gold: #FFF9E6;
+            --harvest-gold: #F2C21A;
+            --crimson-maroon: #801D1D;
+            --deep-garnet: #2D1212;
             --white: #FFFFFF;
         }
 
         body {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--soft-gold);
-            color: var(--deep-garnet);
+            background-color: var(--cit-bg);
+            color: var(--cit-ink);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
         }
 
+        h1, h2, h3, h4, h5, .cit-heading {
+            font-family: 'Montserrat', 'Plus Jakarta Sans', sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        /* ================================================= */
+        /* CIT.EDU STYLE CLEAN WHITE NAVBAR                  */
+        /* ================================================= */
         .navbar-orgflow {
-            background-color: var(--crimson-maroon);
-            border-bottom: 4px solid var(--harvest-gold);
-            box-shadow: 0 4px 12px rgba(107, 46, 30, 0.15);
+            background-color: var(--cit-surface);
+            border-bottom: 3px solid var(--cit-gold);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
         }
 
         .navbar-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            text-decoration: none;
+        }
+
+        .brand-crest {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--cit-maroon), var(--cit-maroon-dark));
+            border: 2px solid var(--cit-gold);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--cit-gold);
+            font-size: 1.15rem;
+            box-shadow: 0 2px 6px rgba(128, 29, 29, 0.25);
+        }
+
+        .brand-text-wrap {
+            line-height: 1.1;
+        }
+
+        .brand-title {
+            font-family: 'Montserrat', sans-serif;
             font-weight: 800;
-            font-size: 1.5rem;
-            color: var(--soft-gold) !important;
+            font-size: 1.2rem;
+            color: var(--cit-maroon);
+            display: block;
         }
 
-        .navbar-brand span {
-            color: var(--harvest-gold);
+        .brand-title span {
+            color: var(--cit-gold-hover);
         }
 
-        .nav-link {
-            color: var(--soft-gold) !important;
+        .brand-sub {
+            font-size: 0.64rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--cit-muted);
+            display: block;
+        }
+
+        .navbar-orgflow .nav-link {
+            color: var(--cit-ink) !important;
             font-weight: 600;
-            transition: color 0.2s;
+            font-size: 0.88rem;
+            padding: 0.5rem 0.8rem !important;
+            border-radius: 8px;
+            transition: all 0.2s ease;
         }
 
-        .nav-link:hover, .nav-link.active {
-            color: var(--harvest-gold) !important;
+        .navbar-orgflow .nav-link:hover,
+        .navbar-orgflow .nav-link.active {
+            color: var(--cit-maroon) !important;
+            background-color: rgba(128, 29, 29, 0.06);
         }
 
+        .navbar-orgflow .nav-link.sso-link {
+            color: var(--cit-maroon) !important;
+            background-color: #FFF4CC;
+            border: 1px solid var(--cit-gold);
+            font-weight: 700;
+        }
+
+        .navbar-orgflow .nav-link.sso-link:hover {
+            background-color: var(--cit-gold);
+        }
+
+        .navbar-toggler {
+            border-color: rgba(128, 29, 29, 0.25);
+        }
+
+        .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28128, 29, 29, 0.9%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+        }
+
+        /* ================================================= */
+        /* CIT.EDU STYLE BUTTONS                             */
+        /* ================================================= */
         .btn-org-primary {
-            background-color: var(--crimson-maroon);
-            color: var(--white);
-            border: 2px solid var(--crimson-maroon);
-            font-weight: 600;
+            background-color: var(--cit-maroon);
+            color: #FFFFFF;
+            border: 2px solid var(--cit-maroon);
+            border-radius: 999px;
+            font-weight: 700;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
             transition: all 0.2s ease;
         }
 
         .btn-org-primary:hover {
-            background-color: var(--deep-garnet);
-            color: var(--soft-gold);
-            border-color: var(--deep-garnet);
+            background-color: var(--cit-maroon-dark);
+            border-color: var(--cit-maroon-dark);
+            color: #FFFFFF;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(128, 29, 29, 0.25);
+        }
+
+        .btn-org-gold {
+            background-color: var(--cit-gold);
+            color: var(--cit-ink);
+            border: 2px solid var(--cit-gold);
+            border-radius: 999px;
+            font-weight: 800;
+            padding-left: 1.25rem;
+            padding-right: 1.25rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-org-gold:hover {
+            background-color: var(--cit-gold-hover);
+            border-color: var(--cit-gold-hover);
+            color: var(--cit-ink);
+            transform: translateY(-1px);
         }
 
         .btn-org-outline {
             background-color: transparent;
-            color: var(--harvest-gold);
-            border: 2px solid var(--harvest-gold);
-            font-weight: 600;
+            color: var(--cit-maroon);
+            border: 1.5px solid var(--cit-maroon);
+            border-radius: 999px;
+            font-weight: 700;
+            padding-left: 1.1rem;
+            padding-right: 1.1rem;
+            transition: all 0.2s ease;
         }
 
         .btn-org-outline:hover {
-            background-color: var(--harvest-gold);
-            color: var(--deep-garnet);
+            background-color: var(--cit-maroon);
+            color: #FFFFFF;
         }
 
+        /* User Pill & Notification Bell */
+        .nav-user-pill {
+            background-color: var(--cit-tile);
+            color: var(--cit-ink);
+            padding: 0.35rem 0.85rem;
+            border-radius: 999px;
+            font-size: 0.84rem;
+            font-weight: 600;
+            border: 1px solid var(--cit-border);
+        }
+
+        .nav-bell-btn {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--cit-tile);
+            color: var(--cit-maroon);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--cit-border);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .nav-bell-btn:hover {
+            background-color: #FFF4CC;
+            border-color: var(--cit-gold);
+            color: var(--cit-maroon-dark);
+        }
+
+        /* ================================================= */
+        /* CIT.EDU STYLE CARDS & FORMS                       */
+        /* ================================================= */
         .card-orgflow {
-            background-color: var(--white);
-            border: 1px solid rgba(107, 46, 30, 0.12);
-            border-radius: 12px;
-            box-shadow: 0 6px 18px rgba(107, 46, 30, 0.06);
+            background-color: var(--cit-surface);
+            border: 1px solid var(--cit-border);
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.05);
         }
 
         .card-header-org {
-            background-color: var(--crimson-maroon);
-            color: var(--soft-gold);
+            background-color: var(--cit-maroon);
+            color: #FFFFFF;
             font-weight: 700;
-            border-top-left-radius: 11px !important;
-            border-top-right-radius: 11px !important;
+            border-bottom: 3px solid var(--cit-gold);
+            border-top-left-radius: 15px !important;
+            border-top-right-radius: 15px !important;
         }
 
         .form-control:focus, .form-select:focus {
-            border-color: var(--harvest-gold);
-            box-shadow: 0 0 0 0.25rem rgba(218, 165, 32, 0.25);
+            border-color: var(--cit-gold);
+            box-shadow: 0 0 0 0.25rem rgba(242, 194, 26, 0.25);
         }
 
-        footer {
+        /* ================================================= */
+        /* CIT.EDU STYLE INSTITUTIONAL FOOTER                */
+        /* ================================================= */
+        .cit-footer {
             margin-top: auto;
-            background-color: var(--deep-garnet);
-            color: var(--soft-gold);
+            background-color: var(--cit-surface);
+            border-top: 3px solid var(--cit-maroon);
+            color: var(--cit-ink);
+        }
+
+        .cit-footer-title {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            color: var(--cit-maroon);
+            margin-bottom: 0.65rem;
+        }
+
+        .cit-footer-link {
+            color: var(--cit-muted);
+            text-decoration: none;
+            font-size: 0.84rem;
+            display: block;
+            margin-bottom: 0.35rem;
+            transition: color 0.15s ease;
+        }
+
+        .cit-footer-link:hover {
+            color: var(--cit-maroon);
         }
     </style>
 </head>
 <body>
 
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-orgflow py-3">
+    <!-- Institutional White Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-orgflow py-2 sticky-top">
         <div class="container">
             <a class="navbar-brand" href="{% url 'home:home' %}">
-                <i class="bi bi-diagram-3-fill me-2"></i>Org<span>Flow</span>
+                <div class="brand-crest">
+                    <i class="bi bi-mortarboard-fill"></i>
+                </div>
+                <div class="brand-text-wrap">
+                    <span class="brand-title">Org<span>Flow</span></span>
+                    <span class="brand-sub">Student Organizations Portal</span>
+                </div>
             </a>
             
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
 
             <div class="collapse navbar-collapse" id="navbarNav">
                 {% if user.is_authenticated %}
-                <ul class="navbar-nav me-auto ms-lg-4">
+                <ul class="navbar-nav me-auto ms-lg-4 gap-1 my-2 my-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'home:home' %}"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
+                        <a class="nav-link" href="{% url 'home:home' %}">
+                            <i class="bi bi-speedometer2 me-1 text-danger"></i>Dashboard
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'posts:feed' %}"><i class="bi bi-megaphone me-1"></i> Campus Feed</a>
+                        <a class="nav-link" href="{% url 'posts:feed' %}">
+                            <i class="bi bi-megaphone me-1 text-danger"></i>Campus Feed
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'organizations:directory' %}"><i class="bi bi-diagram-3 me-1"></i> Organizations</a>
+                        <a class="nav-link" href="{% url 'organizations:directory' %}">
+                            <i class="bi bi-diagram-3 me-1 text-danger"></i>Organizations
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'profile:profile' %}"><i class="bi bi-person-circle me-1"></i> Profile</a>
+                        <a class="nav-link" href="{% url 'profile:profile' %}">
+                            <i class="bi bi-person-circle me-1 text-danger"></i>Profile
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{% url 'user_settings:settings' %}"><i class="bi bi-gear-fill me-1"></i> Settings</a>
+                        <a class="nav-link" href="{% url 'user_settings:settings' %}">
+                            <i class="bi bi-gear me-1 text-danger"></i>Settings
+                        </a>
                     </li>
-                </ul>
                     {% if user.is_staff %}
-                        <li class="nav-item">
-                            <a class="nav-link text-warning fw-bold" href="{% url 'accreditation:sso_dashboard' %}">
-                                <i class="bi bi-shield-lock-fill me-1"></i> SSO Desk
+                        <li class="nav-item ms-lg-1">
+                            <a class="nav-link sso-link" href="{% url 'accreditation:sso_dashboard' %}">
+                                <i class="bi bi-shield-check me-1"></i>SSO Desk
                             </a>
                         </li>
                     {% endif %}
+                </ul>
                 {% endif %}
 
-                <div class="ms-auto d-flex align-items-center">
+                <div class="ms-auto d-flex align-items-center gap-2 py-2 py-lg-0">
                     {% if user.is_authenticated %}
-                        <!-- Notification Bell with Live Badge -->
-                        <a href="{% url 'notifications:list' %}" class="btn btn-outline-light btn-sm position-relative me-3 border-0" title="Notifications">
-                            <i class="bi bi-bell-fill fs-5" style="color: var(--soft-gold);"></i>
+                        <!-- Notification Bell -->
+                        <a href="{% url 'notifications:list' %}" class="nav-bell-btn position-relative me-1" title="Notifications">
+                            <i class="bi bi-bell-fill"></i>
                             {% if unread_notifications_count > 0 %}
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-warning text-dark fw-bold" style="font-size: 0.65rem;">
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" style="font-size: 0.62rem;">
                                     {{ unread_notifications_count }}
                                 </span>
                             {% endif %}
                         </a>
 
-                        <span class="text-white me-3 d-none d-sm-inline">
-                            <i class="bi bi-person-badge-fill me-1" style="color: var(--harvest-gold);"></i>
-                            <strong>{{ user.profile.full_name|default:user.username }}</strong>
+                        <!-- User Identity Pill -->
+                        <span class="nav-user-pill d-none d-sm-inline-flex align-items-center gap-1">
+                            <i class="bi bi-person-badge-fill" style="color: var(--cit-maroon);"></i>
+                            <span>{{ user.profile.full_name|default:user.username }}</span>
                         </span>
+
+                        <!-- Logout -->
                         <form action="{% url 'login:logout' %}" method="post" style="display:inline;">
                             {% csrf_token %}
-                            <button type="submit" class="btn btn-org-outline btn-sm">
+                            <button type="submit" class="btn btn-org-primary btn-sm">
                                 <i class="bi bi-box-arrow-right me-1"></i>Logout
                             </button>
                         </form>
                     {% else %}
-                        <a href="{% url 'login:login' %}" class="btn btn-org-outline btn-sm me-2">Login</a>
+                        <a href="{% url 'login:login' %}" class="btn btn-org-outline btn-sm">Login</a>
                         <a href="{% url 'register:register' %}" class="btn btn-org-primary btn-sm">Register</a>
                     {% endif %}
                 </div>
@@ -185,10 +376,49 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer -->
-    <footer class="py-3 text-center">
+    <!-- CIT.edu Inspired Multi-Column Institutional Footer -->
+    <footer class="cit-footer pt-4 pb-3">
         <div class="container">
-            <small>&copy; 2026 <strong>OrgFlow</strong> – School Organizational Management System</small>
+            <div class="row g-4 pb-3 border-bottom">
+                <div class="col-md-5">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <div class="brand-crest" style="width: 34px; height: 34px; font-size: 1rem;">
+                            <i class="bi bi-mortarboard-fill"></i>
+                        </div>
+                        <div>
+                            <span class="brand-title fs-6">Org<span>Flow</span></span>
+                            <span class="brand-sub">Built Around Student Organizations</span>
+                        </div>
+                    </div>
+                    <p class="small text-muted mb-0" style="max-width: 360px;">
+                        Centralized digital platform for student organization operations, accreditation, KPI monitoring, and campus networking.
+                    </p>
+                </div>
+
+                <div class="col-md-3 col-6">
+                    <div class="cit-footer-title">Quick Links</div>
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'home:home' %}" class="cit-footer-link">Dashboard</a>
+                        <a href="{% url 'organizations:directory' %}" class="cit-footer-link">Organizations Directory</a>
+                        <a href="{% url 'posts:feed' %}" class="cit-footer-link">Campus Feed</a>
+                        <a href="{% url 'notifications:list' %}" class="cit-footer-link">Notifications</a>
+                    {% else %}
+                        <a href="{% url 'login:login' %}" class="cit-footer-link">Student Login</a>
+                        <a href="{% url 'register:register' %}" class="cit-footer-link">Create Account</a>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-4 col-6">
+                    <div class="cit-footer-title">Student Success Office</div>
+                    <p class="small text-muted mb-1"><i class="bi bi-geo-alt-fill me-1 text-danger"></i>Campus Student Center & Governance Hub</p>
+                    <p class="small text-muted mb-0"><i class="bi bi-envelope-fill me-1 text-danger"></i>sso-support@orgflow.edu</p>
+                </div>
+            </div>
+
+            <div class="pt-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+                <small class="text-muted">&copy; 2026 <strong>OrgFlow</strong> – School Organizational Management System</small>
+                <small class="fw-semibold" style="color: var(--cit-maroon);">Organize the work. Track the impact.</small>
+            </div>
         </div>
     </footer>
 

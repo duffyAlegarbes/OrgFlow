@@ -5,18 +5,68 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/login/login.css' %}">
+<style>
+    .cit-auth-wrapper { background-color: #FFFFFF; border-radius: 20px; border: 1px solid #E5E7EB; box-shadow: 0 12px 35px rgba(0,0,0,0.07); overflow: hidden; }
+    .cit-auth-hero { background: linear-gradient(145deg, #FFFDF7 0%, #FFF0BA 58%, #F2C21A 100%); border-right: 1px solid #EFE4C4; }
+    .cit-built-badge { display: inline-block; background-color: #801D1D; color: #FFFFFF; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 0.72rem; letter-spacing: 0.08em; padding: 0.4rem 0.9rem; border-radius: 999px; border: 2px solid #F2C21A; }
+    .cit-stat-pill-gold { background-color: #F2C21A; color: #1F1F1F; border-radius: 14px; padding: 0.75rem 1rem; box-shadow: 0 4px 10px rgba(0,0,0,0.06); }
+    .cit-stat-pill-maroon { background-color: #801D1D; color: #FFFFFF; border-radius: 999px; padding: 0.55rem 1rem; font-size: 0.78rem; font-weight: 700; }
+    .cit-input { background-color: #F8F9FA; border: 1.5px solid #E2E5E9; border-radius: 10px; padding: 0.65rem 0.9rem; font-size: 0.92rem; }
+    .cit-input:focus { background-color: #FFFFFF; border-color: #F2C21A; box-shadow: 0 0 0 0.25rem rgba(242,194,26,0.22); }
+</style>
 
 <div class="row justify-content-center my-4">
-    <div class="col-md-5">
-        <div class="card card-orgflow">
-            <div class="card-header card-header-org text-center py-3">
-                <h4 class="mb-0 fs-5"><i class="bi bi-shield-lock-fill me-2"></i>Officer & Member Login</h4>
+    <div class="col-lg-10 col-xl-9">
+        <div class="cit-auth-wrapper row g-0">
+
+            <!-- Left Column: CIT.edu Inspired Warm Gold Hero Showcase -->
+            <div class="col-md-6 cit-auth-hero p-4 p-lg-5 d-flex flex-column justify-content-between">
+                <div>
+                    <span class="cit-built-badge mb-3">
+                        <i class="bi bi-stars me-1 text-warning"></i>BUILT AROUND STUDENT LEADERS
+                    </span>
+                    <h2 class="fw-bold mb-2" style="color: #2D1212; font-size: 1.85rem;">
+                        Organize the Work.<br>
+                        <span style="color: #801D1D;">Track the Impact.</span>
+                    </h2>
+                    <p class="small mb-4" style="color: #4A3728;">
+                        Everything your student organization needs—from member rosters and project workflows to SSO accreditation—built into one centralized hub.
+                    </p>
+                </div>
+
+                <!-- CIT.edu "Home of Topnotchers" Style Highlight Pills -->
+                <div class="d-flex flex-column gap-2">
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <div class="cit-stat-pill-gold text-center">
+                                <div class="fw-bold fs-5"><i class="bi bi-folder2-open me-1"></i>Docs</div>
+                                <small class="fw-bold text-uppercase" style="font-size: 0.65rem;">Central Archive</small>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="cit-stat-pill-gold text-center">
+                                <div class="fw-bold fs-5"><i class="bi bi-graph-up-arrow me-1"></i>KPIs</div>
+                                <small class="fw-bold text-uppercase" style="font-size: 0.65rem;">Student Agenda</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="cit-stat-pill-maroon text-center">
+                        <i class="bi bi-patch-check-fill me-1 text-warning"></i>OFFICIAL SSO ACCREDITATION READY
+                    </div>
+                </div>
             </div>
-            <div class="card-body p-4">
+
+            <!-- Right Column: Clean Login Card -->
+            <div class="col-md-6 p-4 p-lg-5 bg-white d-flex flex-column justify-content-center">
+                <div class="mb-4">
+                    <span class="text-uppercase fw-bold small" style="color: #801D1D; letter-spacing: 0.06em;">Welcome Back</span>
+                    <h3 class="fw-bold text-dark mt-1 mb-1">Sign In to OrgFlow</h3>
+                    <p class="text-muted small mb-0">Access your student organization workspace.</p>
+                </div>
 
                 {% if messages %}
                     {% for message in messages %}
-                        <div class="alert alert-success alert-dismissible fade show py-2 small" role="alert">
+                        <div class="alert alert-success alert-dismissible fade show py-2 small rounded-3" role="alert">
                             <i class="bi bi-check-circle-fill me-1"></i> {{ message }}
                             <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
                         </div>
@@ -24,7 +74,8 @@
                 {% endif %}
                 
                 {% if form.errors %}
-                    <div class="alert alert-danger py-2 small">
+                    <div class="alert alert-danger py-2 small rounded-3">
+                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
                         <strong>Invalid credentials.</strong> Please check your username and password.
                     </div>
                 {% endif %}
@@ -33,27 +84,28 @@
                     {% csrf_token %}
                     
                     <div class="mb-3">
-                        <label for="id_username" class="form-label">Username</label>
-                        <input type="text" name="username" class="form-control" id="id_username" required placeholder="Enter username">
+                        <label for="id_username" class="form-label small fw-bold text-dark">Username</label>
+                        <input type="text" name="username" class="form-control cit-input" id="id_username" required placeholder="Enter your username">
                     </div>
 
-                    <div class="mb-3">
-                        <label for="id_password" class="form-label">Password</label>
-                        <input type="password" name="password" class="form-control" id="id_password" required placeholder="Enter password">
+                    <div class="mb-4">
+                        <label for="id_password" class="form-label small fw-bold text-dark">Password</label>
+                        <input type="password" name="password" class="form-control cit-input" id="id_password" required placeholder="Enter your password">
                     </div>
 
-                    <button type="submit" class="btn btn-org-primary w-100 py-2 mt-2" id="loginBtn">
+                    <button type="submit" class="btn btn-org-primary w-100 py-2 text-uppercase" id="loginBtn" style="letter-spacing: 0.04em;">
                         <i class="bi bi-box-arrow-in-right me-1"></i> Log In
                     </button>
                 </form>
 
                 <div class="text-center mt-4 pt-3 border-top">
-                    <small style="color: var(--deep-garnet);">
-                        Don't have an account yet? 
-                        <a href="{% url 'register:register' %}" class="fw-bold" style="color: var(--crimson-maroon);">Register here</a>
+                    <small class="text-muted">
+                        New student or organization officer? 
+                        <a href="{% url 'register:register' %}" class="fw-bold text-decoration-none" style="color: #801D1D;">Create an Account &raquo;</a>
                     </small>
                 </div>
             </div>
+
         </div>
     </div>
 </div>

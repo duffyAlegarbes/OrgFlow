@@ -5,19 +5,25 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/projects/projects.css' %}">
+<style>
+    .cit-hero-banner { background: linear-gradient(135deg, #FFFDF7 0%, #FFF1C2 55%, #F2C21A 100%); border: 1px solid #EFE0B1; border-radius: 20px; box-shadow: 0 10px 28px rgba(128,29,29,0.08); }
+    .cit-pill-maroon { background-color: #801D1D !important; color: #FFFFFF !important; font-weight: 700; border-radius: 999px; }
+    .cit-pill-gold { background-color: #F2C21A !important; color: #1F1F1F !important; font-weight: 800; border-radius: 999px; }
+    .cit-input { background-color: #F8F9FA; border: 1.5px solid #E2E5E9; border-radius: 10px; }
+</style>
 
-<!-- Project Header -->
-<div class="card card-orgflow mb-4 p-4 shadow-sm">
-    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 pb-3 border-bottom">
+<!-- Warm Golden CIT.edu Project Header -->
+<div class="cit-hero-banner mb-4 p-4">
+    <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 pb-3 border-bottom border-dark border-opacity-10">
         <div>
-            <div class="d-flex align-items-center gap-2 mb-2">
-                <span class="badge badge-org px-3 py-1">{{ org.acronym|default:org.name }}</span>
-                <span class="badge {% if project.status == 'Completed' %}bg-success{% elif project.status == 'Ongoing' %}bg-primary{% elif project.status == 'Planning' %}bg-warning text-dark{% else %}bg-secondary{% endif %} px-3 py-1 fw-bold">
+            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                <span class="badge cit-pill-maroon px-3 py-1">{{ org.acronym|default:org.name }}</span>
+                <span class="badge rounded-pill {% if project.status == 'Completed' %}bg-success{% elif project.status == 'Ongoing' %}bg-primary{% elif project.status == 'Planning' %}cit-pill-gold{% else %}bg-secondary{% endif %} px-3 py-1 fw-bold">
                     {{ project.get_status_display }}
                 </span>
             </div>
-            <h2 class="fw-bold text-garnet mb-1">{{ project.title }}</h2>
-            <p class="text-muted small mb-0">
+            <h2 class="fw-bold mb-1" style="color: #2D1212;">{{ project.title }}</h2>
+            <p class="small mb-0 fw-medium" style="color: #4A3728;">
                 <i class="bi bi-person-fill me-1"></i>Created by @{{ project.created_by.username|default:"Officer" }} • 
                 <i class="bi bi-calendar-check me-1 ms-2"></i>
                 {% if project.date_start %}
@@ -31,27 +37,27 @@
         <div class="d-flex gap-2 flex-wrap">
             {% if is_officer %}
                 <button type="button" class="btn btn-org-primary btn-sm" data-bs-toggle="modal" data-bs-target="#editProjectModal">
-                    <i class="bi bi-pencil-square me-1"></i>Edit Project
+                    <i class="bi bi-pencil-square"></i><span>Edit Project</span>
                 </button>
             {% endif %}
-            <a href="{% url 'projects:list' org_slug=org.slug %}" class="btn btn-outline-secondary btn-sm">
+            <a href="{% url 'projects:list' org_slug=org.slug %}" class="btn btn-light btn-sm rounded-pill border px-3 fw-semibold">
                 <i class="bi bi-arrow-left me-1"></i>All Projects
             </a>
         </div>
     </div>
 
     <!-- Progress & Financial Quick Stats -->
-    <div class="row g-3 pt-3">
+    <div class="row g-3 pt-3 align-items-center">
         <div class="col-md-6">
-            <label class="form-label small text-muted fw-bold mb-1">
+            <label class="form-label small fw-bold mb-1" style="color: #4A3728;">
                 Activity Deliverables Completion ({{ completed_activities }}/{{ total_activities }})
             </label>
-            <div class="progress" style="height: 12px;">
+            <div class="progress bg-white border" style="height: 12px; border-radius: 999px;">
                 <div class="progress-bar bg-success dynamic-progress" role="progressbar" data-percentage="{{ progress_percentage }}" aria-valuenow="{{ progress_percentage }}" aria-valuemin="0" aria-valuemax="100"></div>
             </div>
         </div>
         <div class="col-md-6 text-md-end">
-            <span class="text-muted small fw-bold d-block">Allocated Budget:</span>
+            <span class="small fw-bold d-block" style="color: #4A3728;">Allocated Budget:</span>
             <span class="fs-5 fw-bold text-success">₱{{ project.budget_allocated }}</span>
         </div>
     </div>
@@ -60,7 +66,7 @@
 <!-- Alerts -->
 {% if messages %}
     {% for message in messages %}
-        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show py-2 small mb-4" role="alert">
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show py-2 small mb-4 rounded-3" role="alert">
             <i class="bi bi-info-circle-fill me-1"></i> {{ message }}
             <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
         </div>
@@ -70,20 +76,20 @@
 <div class="row g-4">
     <!-- Left Column: Description & Sub-Activities Checklist -->
     <div class="col-lg-8">
-        <div class="card card-orgflow p-4 mb-4 shadow-sm">
-            <h5 class="fw-bold text-garnet mb-3"><i class="bi bi-card-text me-2 text-maroon"></i>Project Overview & Objectives</h5>
-            <div class="p-3 bg-light rounded-3 text-dark fs-6 lead">
+        <div class="card card-orgflow p-4 mb-4">
+            <h5 class="fw-bold mb-3" style="color: #2D1212;"><i class="bi bi-card-text me-2" style="color: #801D1D;"></i>Project Overview &amp; Objectives</h5>
+            <div class="p-3 bg-light rounded-3 text-dark fs-6">
                 {{ project.description|linebreaks }}
             </div>
         </div>
 
         <!-- Sub-Activities / Tasks Section -->
-        <div class="card card-orgflow shadow-sm">
+        <div class="card card-orgflow overflow-hidden">
             <div class="card-header card-header-org py-3 d-flex justify-content-between align-items-center">
-                <h5 class="mb-0 fs-6"><i class="bi bi-check2-square me-2 text-gold"></i>Delegated Activities & Milestones</h5>
+                <h5 class="mb-0 fs-6"><i class="bi bi-check2-square me-2 text-warning"></i>Delegated Activities &amp; Milestones</h5>
                 {% if is_officer %}
-                    <button type="button" class="btn btn-warning btn-sm fw-bold text-dark" data-bs-toggle="modal" data-bs-target="#addActivityModal">
-                        <i class="bi bi-plus-lg me-1"></i>Add Activity
+                    <button type="button" class="btn btn-org-gold btn-sm" data-bs-toggle="modal" data-bs-target="#addActivityModal">
+                        <i class="bi bi-plus-lg"></i><span>Add Activity</span>
                     </button>
                 {% endif %}
             </div>
@@ -109,7 +115,7 @@
                                 </div>
                             </div>
 
-                            <span class="badge {% if act.status == 'Done' %}bg-success{% else %}bg-warning text-dark{% endif %} px-3 py-1">
+                            <span class="badge rounded-pill {% if act.status == 'Done' %}bg-success{% else %}cit-pill-gold{% endif %} px-3 py-1">
                                 {{ act.status }}
                             </span>
                         </div>
@@ -126,8 +132,8 @@
 
     <!-- Right Column: Quick Metadata -->
     <div class="col-lg-4">
-        <div class="card card-orgflow p-4 shadow-sm">
-            <h5 class="fw-bold text-garnet mb-3"><i class="bi bi-info-circle-fill me-2 text-maroon"></i>Quick Info</h5>
+        <div class="card card-orgflow p-4">
+            <h5 class="fw-bold mb-3" style="color: #2D1212;"><i class="bi bi-info-circle-fill me-2" style="color: #801D1D;"></i>Quick Info</h5>
             <ul class="list-group list-group-flush small">
                 <li class="list-group-item d-flex justify-content-between px-0">
                     <span class="text-muted">Hosting Club:</span>
@@ -135,7 +141,7 @@
                 </li>
                 <li class="list-group-item d-flex justify-content-between px-0">
                     <span class="text-muted">Status:</span>
-                    <span class="badge {% if project.status == 'Completed' %}bg-success{% elif project.status == 'Ongoing' %}bg-primary{% else %}bg-secondary{% endif %}">
+                    <span class="badge rounded-pill {% if project.status == 'Completed' %}bg-success{% elif project.status == 'Ongoing' %}bg-primary{% else %}bg-secondary{% endif %}">
                         {{ project.get_status_display }}
                     </span>
                 </li>
@@ -152,22 +158,22 @@
 {% if is_officer %}
 <div class="modal fade" id="addActivityModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content card-orgflow border-0">
+        <div class="modal-content card-orgflow border-0 overflow-hidden">
             <div class="modal-header card-header-org py-3">
                 <h5 class="modal-title fs-5"><i class="bi bi-plus-circle-fill me-2 text-warning"></i>Delegate Sub-Activity</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form action="{% url 'projects:activity_add' project_id=project.id %}" method="post">
                 {% csrf_token %}
-                <div class="modal-body p-4">
+                <div class="modal-body p-4 bg-white">
                     <div class="mb-3">
-                        <label class="form-label fw-bold small text-garnet">Activity / Task Title <span class="text-danger">*</span></label>
-                        <input type="text" name="title" class="form-control" placeholder="e.g. Reserve Auditorium Sound System" required>
+                        <label class="form-label fw-bold small text-dark">Activity / Task Title <span class="text-danger">*</span></label>
+                        <input type="text" name="title" class="form-control cit-input" placeholder="e.g. Reserve Auditorium Sound System" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold small text-garnet">Assign to Member / Officer</label>
-                        <select name="assigned_to" class="form-select">
+                        <label class="form-label fw-bold small text-dark">Assign to Member / Officer</label>
+                        <select name="assigned_to" class="form-select cit-input">
                             <option value="">-- Leave Unassigned --</option>
                             {% for m in active_members %}
                                 <option value="{{ m.user.id }}">{{ m.user.profile.full_name|default:m.user.username }} (@{{ m.user.username }}) - {{ m.role }}</option>
@@ -176,7 +182,7 @@
                     </div>
                 </div>
                 <div class="modal-footer bg-light py-2">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-light border rounded-pill btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-org-primary btn-sm">Add Activity</button>
                 </div>
             </form>
@@ -187,22 +193,22 @@
 <!-- Edit Project Modal -->
 <div class="modal fade" id="editProjectModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content card-orgflow border-0">
+        <div class="modal-content card-orgflow border-0 overflow-hidden">
             <div class="modal-header card-header-org py-3">
                 <h5 class="modal-title fs-5"><i class="bi bi-pencil-square me-2 text-warning"></i>Edit Project Details</h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form action="{% url 'projects:edit' project_id=project.id %}" method="post">
                 {% csrf_token %}
-                <div class="modal-body p-4">
+                <div class="modal-body p-4 bg-white">
                     <div class="mb-3">
-                        <label class="form-label fw-bold small text-garnet">Project Title</label>
-                        <input type="text" name="title" class="form-control" value="{{ project.title }}" required>
+                        <label class="form-label fw-bold small text-dark">Project Title</label>
+                        <input type="text" name="title" class="form-control cit-input" value="{{ project.title }}" required>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold small text-garnet">Project Status</label>
-                        <select name="status" class="form-select">
+                        <label class="form-label fw-bold small text-dark">Project Status</label>
+                        <select name="status" class="form-select cit-input">
                             {% for key, label in statuses %}
                                 <option value="{{ key }}" {% if project.status == key %}selected{% endif %}>{{ label }}</option>
                             {% endfor %}
@@ -211,27 +217,27 @@
 
                     <div class="row g-2 mb-3">
                         <div class="col-6">
-                            <label class="form-label fw-bold small text-garnet">Start Date</label>
-                            <input type="date" name="date_start" class="form-control" value="{{ project.date_start|date:'Y-m-d' }}">
+                            <label class="form-label fw-bold small text-dark">Start Date</label>
+                            <input type="date" name="date_start" class="form-control cit-input" value="{{ project.date_start|date:'Y-m-d' }}">
                         </div>
                         <div class="col-6">
-                            <label class="form-label fw-bold small text-garnet">End Date</label>
-                            <input type="date" name="date_end" class="form-control" value="{{ project.date_end|date:'Y-m-d' }}">
+                            <label class="form-label fw-bold small text-dark">End Date</label>
+                            <input type="date" name="date_end" class="form-control cit-input" value="{{ project.date_end|date:'Y-m-d' }}">
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold small text-garnet">Allocated Budget (₱)</label>
-                        <input type="number" step="0.01" name="budget_allocated" class="form-control" value="{{ project.budget_allocated }}">
+                        <label class="form-label fw-bold small text-dark">Allocated Budget (₱)</label>
+                        <input type="number" step="0.01" name="budget_allocated" class="form-control cit-input" value="{{ project.budget_allocated }}">
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-bold small text-garnet">Description</label>
-                        <textarea name="description" class="form-control" rows="4" required>{{ project.description }}</textarea>
+                        <label class="form-label fw-bold small text-dark">Description</label>
+                        <textarea name="description" class="form-control cit-input" rows="4" required>{{ project.description }}</textarea>
                     </div>
                 </div>
                 <div class="modal-footer bg-light py-2">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-light border rounded-pill btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-org-primary btn-sm">Save Changes</button>
                 </div>
             </form>

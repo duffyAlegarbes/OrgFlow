@@ -5,26 +5,37 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/documents/documents.css' %}">
+<style>
+    .cit-hero-banner { background: linear-gradient(135deg, #FFFDF7 0%, #FFF1C2 55%, #F2C21A 100%); border: 1px solid #EFE0B1; border-radius: 20px; box-shadow: 0 10px 28px rgba(128,29,29,0.08); }
+    .cit-pill-maroon { background-color: #801D1D !important; color: #FFFFFF !important; font-weight: 700; border-radius: 999px; }
+    .cit-pill-gold { background-color: #F2C21A !important; color: #1F1F1F !important; font-weight: 800; border-radius: 999px; }
+    .doc-icon-box { width: 42px; height: 42px; min-width: 42px; background-color: #FDECEC; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+    .cit-input { background-color: #F8F9FA; border: 1.5px solid #E2E5E9; border-radius: 10px; }
+</style>
 
-<!-- Header Banner -->
-<div class="card card-orgflow mb-4 p-4 welcome-banner text-white shadow-sm">
+<!-- Warm Golden CIT.edu Header Banner -->
+<div class="cit-hero-banner p-4 mb-4">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
-            <div class="d-flex align-items-center gap-2 mb-2">
-                <span class="badge badge-org px-3 py-1">{{ org.acronym|default:org.name }}</span>
-                <span class="badge bg-light text-dark px-3 py-1 fw-bold">Official Records</span>
+            <div class="d-flex align-items-center gap-2 mb-2 flex-wrap">
+                <span class="badge cit-pill-maroon px-3 py-1">{{ org.acronym|default:org.name }}</span>
+                <span class="badge cit-pill-gold px-3 py-1">Official Records</span>
             </div>
-            <h2 class="fw-bold mb-1"><i class="bi bi-folder2-open me-2 text-warning"></i>{{ org.name }} — Document Repository</h2>
-            <p class="mb-0 text-white-50">Centralized archive for constitution, financial reports, proposals, and official documentation.</p>
+            <h2 class="fw-bold mb-1" style="color: #2D1212;">
+                <i class="bi bi-folder2-open me-2" style="color: #801D1D;"></i>{{ org.name }} — Document Repository
+            </h2>
+            <p class="mb-0 small fw-medium" style="color: #4A3728;">
+                Centralized archive for constitution, financial reports, proposals, and official documentation.
+            </p>
         </div>
 
         <div class="d-flex gap-2 flex-wrap">
             {% if is_officer %}
-                <button type="button" class="btn btn-warning fw-bold text-dark px-3 py-2 shadow-sm" data-bs-toggle="modal" data-bs-target="#uploadDocModal">
-                    <i class="bi bi-cloud-arrow-up-fill me-1"></i>Upload Document
+                <button type="button" class="btn btn-org-primary btn-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#uploadDocModal">
+                    <i class="bi bi-cloud-arrow-up-fill"></i><span>Upload Document</span>
                 </button>
             {% endif %}
-            <a href="{% url 'organizations:detail' slug=org.slug %}" class="btn btn-outline-light px-3 py-2">
+            <a href="{% url 'organizations:detail' slug=org.slug %}" class="btn btn-light btn-sm rounded-pill border px-3 py-2 fw-semibold">
                 <i class="bi bi-arrow-left me-1"></i>Back to Org Profile
             </a>
         </div>
@@ -34,7 +45,7 @@
 <!-- Alerts -->
 {% if messages %}
     {% for message in messages %}
-        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show py-2 small mb-4" role="alert">
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% else %}alert-success{% endif %} alert-dismissible fade show py-2 small mb-4 rounded-3" role="alert">
             <i class="bi bi-check-circle-fill me-1"></i> {{ message }}
             <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
         </div>
@@ -42,16 +53,16 @@
 {% endif %}
 
 <!-- Search & Category Filters -->
-<div class="card card-orgflow p-3 mb-4 shadow-sm">
+<div class="card card-orgflow p-3 mb-4">
     <form method="get" class="row g-2 align-items-center">
         <div class="col-md-7">
             <div class="input-group">
-                <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
-                <input type="text" name="search" class="form-control" placeholder="Search documents by title or keyword..." value="{{ search_query }}">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" name="search" class="form-control cit-input border-start-0" placeholder="Search documents by title or keyword..." value="{{ search_query }}">
             </div>
         </div>
         <div class="col-md-3">
-            <select name="category" class="form-select">
+            <select name="category" class="form-select cit-input">
                 <option value="">All Categories</option>
                 {% for key, label in categories %}
                     <option value="{{ key }}" {% if selected_category == key %}selected{% endif %}>{{ label }}</option>
@@ -61,16 +72,16 @@
         <div class="col-md-2 d-flex gap-2">
             <button type="submit" class="btn btn-org-primary w-100">Filter</button>
             {% if search_query or selected_category %}
-                <a href="{% url 'documents:list' org_slug=org.slug %}" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
+                <a href="{% url 'documents:list' org_slug=org.slug %}" class="btn btn-outline-secondary rounded-pill" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
             {% endif %}
         </div>
     </form>
 </div>
 
 <!-- Document Records Table -->
-<div class="card card-orgflow shadow-sm">
+<div class="card card-orgflow overflow-hidden">
     <div class="card-header card-header-org py-3 d-flex justify-content-between align-items-center">
-        <h5 class="mb-0 fs-6"><i class="bi bi-files me-2 text-gold"></i>Archived Files & Records ({{ total_count }})</h5>
+        <h5 class="mb-0 fs-6"><i class="bi bi-files me-2 text-warning"></i>Archived Files &amp; Records ({{ total_count }})</h5>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -91,7 +102,7 @@
                             <td class="ps-4">
                                 <div class="d-flex align-items-center gap-3">
                                     <div class="doc-icon-box">
-                                        <i class="bi bi-file-earmark-text-fill fs-4 text-maroon"></i>
+                                        <i class="bi bi-file-earmark-text-fill fs-5" style="color: #801D1D;"></i>
                                     </div>
                                     <div>
                                         <h6 class="mb-0 fw-bold text-dark">{{ doc.title }}</h6>
@@ -100,17 +111,17 @@
                                 </div>
                             </td>
                             <td>
-                                <span class="badge bg-gold text-garnet fw-bold">
+                                <span class="badge cit-pill-gold px-2 py-1">
                                     {{ doc.get_category_display }}
                                 </span>
                             </td>
                             <td>
                                 {% if doc.is_public %}
-                                    <span class="badge bg-success-subtle text-success border border-success px-2 py-1">
+                                    <span class="badge bg-success-subtle text-success border border-success rounded-pill px-2 py-1">
                                         <i class="bi bi-globe me-1"></i>Public
                                     </span>
                                 {% else %}
-                                    <span class="badge bg-secondary-subtle text-secondary border px-2 py-1">
+                                    <span class="badge bg-secondary-subtle text-secondary border rounded-pill px-2 py-1">
                                         <i class="bi bi-lock-fill me-1"></i>Internal
                                     </span>
                                 {% endif %}
@@ -121,15 +132,12 @@
                             </td>
                             <td class="small text-muted">{{ doc.uploaded_at|date:"M d, Y" }}</td>
                             <td class="text-end pe-4">
-                                <div class="btn-group btn-group-sm">
-                                    <!-- Download Button -->
-                                    <a href="{{ doc.file.url }}" class="btn btn-outline-dark" download target="_blank" title="Download File">
-                                        <i class="bi bi-download me-1"></i>Download
+                                <div class="d-inline-flex gap-1">
+                                    <a href="{{ doc.file.url }}" class="btn btn-org-outline btn-sm" download target="_blank" title="Download File">
+                                        <i class="bi bi-download"></i><span>Download</span>
                                     </a>
-
-                                    <!-- Delete Button (If authorized) -->
                                     {% if is_officer %}
-                                        <a href="{% url 'documents:delete' doc_id=doc.id %}" class="btn btn-outline-danger" onclick="return confirm('Are you sure you want to permanently delete this document?');" title="Delete">
+                                        <a href="{% url 'documents:delete' doc_id=doc.id %}" class="btn btn-outline-danger btn-sm rounded-circle" onclick="return confirm('Are you sure you want to permanently delete this document?');" title="Delete">
                                             <i class="bi bi-trash-fill"></i>
                                         </a>
                                     {% endif %}
@@ -140,7 +148,7 @@
                         <tr>
                             <td colspan="6" class="text-center text-muted py-5">
                                 <i class="bi bi-folder-x fs-1 text-muted d-block mb-2"></i>
-                                <h6 class="fw-bold text-garnet">No Documents Found</h6>
+                                <h6 class="fw-bold" style="color: #2D1212;">No Documents Found</h6>
                                 <p class="small text-muted mb-0">No records have been uploaded under this category yet.</p>
                             </td>
                         </tr>
@@ -155,42 +163,38 @@
 {% if is_officer %}
 <div class="modal fade" id="uploadDocModal" tabindex="-1" aria-labelledby="uploadDocModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content card-orgflow border-0">
+        <div class="modal-content card-orgflow border-0 overflow-hidden">
             <div class="modal-header card-header-org py-3">
                 <h5 class="modal-title fs-5" id="uploadDocModalLabel">
-                    <i class="bi bi-cloud-arrow-up-fill me-2" style="color: var(--harvest-gold);"></i>Upload Official Document
+                    <i class="bi bi-cloud-arrow-up-fill me-2 text-warning"></i>Upload Official Document
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form action="{% url 'documents:upload' org_slug=org.slug %}" method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <div class="modal-body p-4">
-                    <!-- Title -->
+                <div class="modal-body p-4 bg-white">
                     <div class="mb-3">
-                        <label class="form-label fw-bold small text-garnet">Document Title <span class="text-danger">*</span></label>
-                        <input type="text" name="title" class="form-control" placeholder="e.g. 2025 Revised Constitution & By-Laws" required>
+                        <label class="form-label fw-bold small text-dark">Document Title <span class="text-danger">*</span></label>
+                        <input type="text" name="title" class="form-control cit-input" placeholder="e.g. 2025 Revised Constitution & By-Laws" required>
                     </div>
 
-                    <!-- Category -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold small text-garnet">Classification Category</label>
-                        <select name="category" class="form-select">
+                        <label class="form-label fw-bold small text-dark">Classification Category</label>
+                        <select name="category" class="form-select cit-input">
                             {% for key, label in categories %}
                                 <option value="{{ key }}">{{ label }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
-                    <!-- File Picker -->
                     <div class="mb-3">
-                        <label class="form-label fw-bold small text-garnet">Select File (PDF, DOCX, XLSX, etc.) <span class="text-danger">*</span></label>
-                        <input type="file" name="file" class="form-control" required>
+                        <label class="form-label fw-bold small text-dark">Select File (PDF, DOCX, XLSX, etc.) <span class="text-danger">*</span></label>
+                        <input type="file" name="file" class="form-control cit-input" required>
                     </div>
 
-                    <!-- Public Toggle -->
                     <div class="form-check form-switch mt-3">
                         <input class="form-check-input" type="checkbox" name="is_public" id="publicToggle">
-                        <label class="form-check-label small fw-bold text-garnet" for="publicToggle">
+                        <label class="form-check-label small fw-bold text-dark" for="publicToggle">
                             Make this document Public
                         </label>
                         <p class="text-muted small mb-0" style="font-size: 0.75rem;">
@@ -200,9 +204,9 @@
                 </div>
 
                 <div class="modal-footer bg-light py-2">
-                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-light border rounded-pill btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-org-primary btn-sm">
-                        <i class="bi bi-cloud-arrow-up-fill me-1"></i>Upload File
+                        <i class="bi bi-cloud-arrow-up-fill"></i><span>Upload File</span>
                     </button>
                 </div>
             </form>

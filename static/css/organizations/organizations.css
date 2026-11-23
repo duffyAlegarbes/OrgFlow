@@ -1,57 +1,131 @@
-/* Organizations Feature Specific Styles */
-.welcome-banner {
-    background: linear-gradient(135deg, #990000, #6B2E1E);
+.cit-org-hero {
+    background: linear-gradient(135deg, #FFFDF7 0%, #FFF1C2 55%, #F2C21A 100%);
+    border: 1px solid #EFE0B1;
+    border-radius: 20px;
+    box-shadow: 0 10px 28px rgba(128, 29, 29, 0.08);
 }
 
-.org-card {
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+.cit-pill-maroon {
+    background-color: #801D1D !important;
+    color: #FFFFFF !important;
+    font-weight: 700;
+    border-radius: 999px;
 }
 
-.org-card:hover {
+.cit-pill-gold {
+    background-color: #F2C21A !important;
+    color: #1F1F1F !important;
+    font-weight: 800;
+    border-radius: 999px;
+    border: 1px solid #DAA90F;
+}
+
+.text-maroon { color: #801D1D !important; }
+.text-gold { color: #C99A08 !important; }
+.text-garnet { color: #2D1212 !important; }
+.bg-maroon { background-color: #801D1D !important; }
+.bg-gold { background-color: #F2C21A !important; }
+
+/* Directory Cards */
+.cit-org-card {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+    transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+    overflow: hidden;
+}
+
+.cit-org-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 24px rgba(107, 46, 30, 0.12);
+    border-color: #F2C21A;
+    box-shadow: 0 12px 26px rgba(128, 29, 29, 0.12);
+}
+
+.cit-org-card-accent {
+    height: 5px;
+    background: linear-gradient(90deg, #801D1D, #F2C21A);
 }
 
 .org-logo-thumbnail {
     width: 60px;
     height: 60px;
+    min-width: 60px;
     object-fit: cover;
-    border-radius: 12px;
-    border: 2px solid #DAA520;
+    border-radius: 14px;
+    border: 2px solid #F2C21A;
+    background-color: #FFFFFF;
 }
 
 .org-logo-placeholder {
     width: 60px;
     height: 60px;
-    background-color: #990000;
-    border-radius: 12px;
+    min-width: 60px;
+    background: linear-gradient(135deg, #801D1D, #5E1212);
+    border: 2px solid #F2C21A;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .org-logo-large {
-    width: 90px;
-    height: 90px;
+    width: 88px;
+    height: 88px;
+    min-width: 88px;
     object-fit: cover;
-    border-radius: 16px;
-    border: 3px solid #DAA520;
+    border-radius: 18px;
+    border: 3px solid #801D1D;
+    background-color: #FFFFFF;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .org-logo-large-placeholder {
-    width: 90px;
-    height: 90px;
-    background-color: #990000;
-    border-radius: 16px;
+    width: 88px;
+    height: 88px;
+    min-width: 88px;
+    background: linear-gradient(135deg, #801D1D, #5E1212);
+    border: 3px solid #FFFFFF;
+    border-radius: 18px;
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 12px rgba(128, 29, 29, 0.22);
 }
 
-.bg-maroon {
-    background-color: #990000 !important;
+/* Form Inputs */
+.cit-input {
+    background-color: #F8F9FA;
+    border: 1.5px solid #E2E5E9;
+    border-radius: 10px;
+    padding: 0.6rem 0.9rem;
 }
 
-.text-gold {
-    color: #DAA520 !important;
+.cit-input:focus {
+    background-color: #FFFFFF;
+    border-color: #F2C21A;
+    box-shadow: 0 0 0 0.25rem rgba(242, 194, 26, 0.22);
+}
+
+/* Workspace Nav Pills on Org Detail */
+.cit-workspace-pill {
+    background-color: #FFFFFF;
+    color: #1F1F1F;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 999px;
+    font-weight: 700;
+    font-size: 0.82rem;
+    padding: 0.42rem 0.9rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    transition: all 0.2s ease;
+}
+
+.cit-workspace-pill:hover {
+    background-color: #FFF9E6;
+    border-color: #F2C21A;
+    color: #801D1D;
+    transform: translateY(-1px);
 }

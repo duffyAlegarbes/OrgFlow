@@ -5,17 +5,33 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/organizations/organizations.css' %}">
+<style>
+    .cit-org-hero { background: linear-gradient(135deg, #FFFDF7 0%, #FFF1C2 55%, #F2C21A 100%); border: 1px solid #EFE0B1; border-radius: 20px; box-shadow: 0 10px 28px rgba(128,29,29,0.08); }
+    .cit-org-card { background-color: #FFFFFF; border: 1px solid #E5E7EB; border-radius: 18px; box-shadow: 0 6px 18px rgba(0,0,0,0.05); transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease; overflow: hidden; }
+    .cit-org-card:hover { transform: translateY(-4px); border-color: #F2C21A; box-shadow: 0 12px 26px rgba(128,29,29,0.12); }
+    .cit-org-card-accent { height: 5px; background: linear-gradient(90deg, #801D1D, #F2C21A); }
+    .cit-pill-gold { background-color: #F2C21A !important; color: #1F1F1F !important; font-weight: 800; border-radius: 999px; }
+    .cit-pill-maroon { background-color: #801D1D !important; color: #FFFFFF !important; font-weight: 700; border-radius: 999px; }
+    .org-logo-thumbnail { width: 60px; height: 60px; min-width: 60px; object-fit: cover; border-radius: 14px; border: 2px solid #F2C21A; }
+    .org-logo-placeholder { width: 60px; height: 60px; min-width: 60px; background: linear-gradient(135deg, #801D1D, #5E1212); border: 2px solid #F2C21A; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+    .cit-input { background-color: #F8F9FA; border: 1.5px solid #E2E5E9; border-radius: 10px; }
+</style>
 
-<!-- Header Banner -->
-<div class="card card-orgflow mb-4 p-4 welcome-banner text-white">
+<!-- Warm Golden CIT.edu Inspired Header -->
+<div class="cit-org-hero p-4 p-lg-5 mb-4">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
-            <h2 class="fw-bold mb-1"><i class="bi bi-diagram-3-fill me-2 text-warning"></i>Student Organizations Directory</h2>
-            <p class="mb-0 text-white-50">Discover, join, and collaborate with accredited student groups.</p>
+            <span class="badge cit-pill-maroon px-3 py-1 mb-2">
+                <i class="bi bi-compass-fill me-1 text-warning"></i>CAMPUS DIRECTORY
+            </span>
+            <h2 class="fw-bold mb-1" style="color: #2D1212;">Explore Student Organizations</h2>
+            <p class="mb-0 small fw-medium" style="color: #4A3728;">
+                Discover recognized clubs, departmental societies, and student leadership organizations across campus.
+            </p>
         </div>
         <div>
-            <a href="{% url 'organizations:create' %}" class="btn btn-warning fw-bold text-dark px-3 py-2">
-                <i class="bi bi-plus-circle-fill me-1"></i>Register New Organization
+            <a href="{% url 'organizations:create' %}" class="btn btn-org-primary px-4 py-2 text-uppercase" style="font-size: 0.84rem;">
+                <i class="bi bi-plus-circle-fill"></i><span>Register New Organization</span>
             </a>
         </div>
     </div>
@@ -26,12 +42,12 @@
     <form method="get" class="row g-2 align-items-center">
         <div class="col-md-7">
             <div class="input-group">
-                <span class="input-group-text bg-light"><i class="bi bi-search text-muted"></i></span>
-                <input type="text" name="search" class="form-control" placeholder="Search by organization name, acronym, or mission..." value="{{ query }}">
+                <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
+                <input type="text" name="search" class="form-control cit-input border-start-0" placeholder="Search by organization name, acronym, or mission..." value="{{ query }}">
             </div>
         </div>
         <div class="col-md-3">
-            <select name="category" class="form-select">
+            <select name="category" class="form-select cit-input">
                 <option value="">All Categories</option>
                 {% for key, label in categories %}
                     <option value="{{ key }}" {% if selected_category == key %}selected{% endif %}>{{ label }}</option>
@@ -41,7 +57,7 @@
         <div class="col-md-2 d-flex gap-2">
             <button type="submit" class="btn btn-org-primary w-100">Filter</button>
             {% if query or selected_category %}
-                <a href="{% url 'organizations:directory' %}" class="btn btn-outline-secondary" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
+                <a href="{% url 'organizations:directory' %}" class="btn btn-outline-secondary rounded-pill" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
             {% endif %}
         </div>
     </form>
@@ -51,19 +67,27 @@
 <div class="row g-4">
     {% for org in organizations %}
         <div class="col-lg-4 col-md-6">
-            <div class="card card-orgflow h-100 org-card">
-                <div class="card-body p-4 d-flex flex-column">
+            <div class="cit-org-card h-100 d-flex flex-column">
+                <div class="cit-org-card-accent"></div>
+                <div class="card-body p-4 d-flex flex-column flex-grow-1">
                     <div class="d-flex align-items-center gap-3 mb-3">
                         {% if org.logo %}
                             <img src="{{ org.logo.url }}" alt="{{ org.name }}" class="org-logo-thumbnail">
                         {% else %}
                             <div class="org-logo-placeholder">
-                                <i class="bi bi-building fs-3 text-white"></i>
+                                <i class="bi bi-building fs-3 text-warning"></i>
                             </div>
                         {% endif %}
-                        <div>
-                            <span class="badge bg-gold text-garnet fw-bold mb-1">{{ org.category }}</span>
-                            <h5 class="fw-bold text-garnet mb-0">{{ org.name }}</h5>
+                        <div class="overflow-hidden">
+                            <div class="d-flex align-items-center gap-1 flex-wrap mb-1">
+                                <span class="badge cit-pill-gold" style="font-size: 0.68rem;">{{ org.category }}</span>
+                                {% if org.id in user_org_ids %}
+                                    <span class="badge bg-success rounded-pill" style="font-size: 0.66rem;">
+                                        <i class="bi bi-check-circle me-1"></i>Joined
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <h5 class="fw-bold mb-0 text-truncate" style="color: #2D1212;" title="{{ org.name }}">{{ org.name }}</h5>
                             {% if org.acronym %}
                                 <span class="text-muted small fw-semibold">({{ org.acronym }})</span>
                             {% endif %}
@@ -74,10 +98,10 @@
                         {{ org.description|truncatewords:22 }}
                     </p>
 
-                    <div class="pt-3 border-top d-flex justify-content-between align-items-center">
-                        <small class="text-muted"><i class="bi bi-envelope me-1"></i>{{ org.contact_email|default:"No contact email" }}</small>
-                        <a href="{% url 'organizations:detail' slug=org.slug %}" class="btn btn-outline-dark btn-sm fw-semibold">
-                            View Profile <i class="bi bi-arrow-right ms-1"></i>
+                    <div class="pt-3 border-top d-flex justify-content-between align-items-center gap-2">
+                        <small class="text-muted text-truncate"><i class="bi bi-envelope me-1"></i>{{ org.contact_email|default:"No contact email" }}</small>
+                        <a href="{% url 'organizations:detail' slug=org.slug %}" class="btn btn-org-outline btn-sm flex-shrink-0">
+                            View &raquo;
                         </a>
                     </div>
                 </div>
@@ -87,10 +111,10 @@
         <div class="col-12">
             <div class="card card-orgflow text-center p-5">
                 <i class="bi bi-search fs-1 text-muted mb-2"></i>
-                <h5 class="text-garnet fw-bold">No Organizations Found</h5>
+                <h5 class="fw-bold" style="color: #2D1212;">No Organizations Found</h5>
                 <p class="text-muted small">No organizations match your current search criteria or category filter.</p>
-                <div>
-                    <a href="{% url 'organizations:directory' %}" class="btn btn-outline-secondary btn-sm me-2">Clear Filters</a>
+                <div class="d-flex justify-content-center gap-2">
+                    <a href="{% url 'organizations:directory' %}" class="btn btn-org-outline btn-sm">Clear Filters</a>
                     <a href="{% url 'organizations:create' %}" class="btn btn-org-primary btn-sm">Create Organization</a>
                 </div>
             </div>

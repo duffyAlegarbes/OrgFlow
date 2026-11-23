@@ -5,21 +5,58 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/accreditation/accreditation.css' %}">
+<style>
+    .cit-hero-banner { background: linear-gradient(135deg, #FFFDF7 0%, #FFF1C2 55%, #F2C21A 100%); border: 1px solid #EFE0B1; border-radius: 20px; box-shadow: 0 10px 28px rgba(128,29,29,0.08); }
+    .cit-pill-maroon { background-color: #801D1D !important; color: #FFFFFF !important; font-weight: 700; border-radius: 999px; }
+    .cit-pill-gold { background-color: #F2C21A !important; color: #1F1F1F !important; font-weight: 800; border-radius: 999px; }
+</style>
 
-<div class="card card-orgflow mb-4 p-4 welcome-banner text-white shadow-sm">
+<!-- Warm Golden CIT.edu Header -->
+<div class="cit-hero-banner p-4 mb-4">
     <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
         <div>
-            <span class="badge badge-org px-3 py-1 mb-2">Student Success Office</span>
-            <h2 class="fw-bold mb-1"><i class="bi bi-shield-check me-2 text-warning"></i>Accreditation Monitoring Desk</h2>
-            <p class="mb-0 text-white-50">Audit organization submissions, inspect legal documentation, and grant academic year accreditation.</p>
+            <span class="badge cit-pill-maroon px-3 py-1 mb-2">
+                <i class="bi bi-shield-lock-fill me-1 text-warning"></i>STUDENT SUCCESS OFFICE
+            </span>
+            <h2 class="fw-bold mb-1" style="color: #2D1212;">
+                <i class="bi bi-shield-check me-2" style="color: #801D1D;"></i>Accreditation Monitoring Desk
+            </h2>
+            <p class="mb-0 small fw-medium" style="color: #4A3728;">
+                Audit organization submissions, inspect legal documentation, and grant academic year accreditation.
+            </p>
         </div>
     </div>
 </div>
 
+<!-- Alerts -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'warning' %}alert-warning{% elif message.tags == 'info' %}alert-info{% else %}alert-success{% endif %} alert-dismissible fade show py-2 small mb-4 rounded-3" role="alert">
+            <i class="bi bi-info-circle-fill me-1"></i> {{ message }}
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Status Filter Pills -->
+<div class="card card-orgflow p-3 mb-4">
+    <div class="d-flex gap-2 flex-wrap align-items-center">
+        <span class="text-muted small fw-bold me-1"><i class="bi bi-funnel-fill me-1"></i>Filter Status:</span>
+        <a href="{% url 'accreditation:sso_dashboard' %}" class="btn btn-sm {% if not status_filter %}btn-org-primary{% else %}btn-light border rounded-pill{% endif %}">
+            All
+        </a>
+        {% for key, label in statuses %}
+            <a href="?status={{ key }}" class="btn btn-sm {% if status_filter == key %}btn-org-primary{% else %}btn-light border rounded-pill{% endif %}">
+                {{ label }}
+            </a>
+        {% endfor %}
+    </div>
+</div>
+
 <!-- Submissions Table -->
-<div class="card card-orgflow shadow-sm">
+<div class="card card-orgflow overflow-hidden">
     <div class="card-header card-header-org py-3 d-flex justify-content-between align-items-center">
-        <h5 class="mb-0 fs-6"><i class="bi bi-inbox-fill me-2 text-gold"></i>Organization Applications</h5>
+        <h5 class="mb-0 fs-6"><i class="bi bi-inbox-fill me-2 text-warning"></i>Organization Applications</h5>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -41,15 +78,15 @@
                                 {% if sub.organization.acronym %}<span class="text-muted small">({{ sub.organization.acronym }})</span>{% endif %}
                             </td>
                             <td class="small">{{ sub.cycle.academic_year }}</td>
-                            <td class="small text-muted">@{{ sub.submitted_by.username }}</td>
+                            <td class="small text-muted font-monospace">@{{ sub.submitted_by.username }}</td>
                             <td>
-                                <span class="badge {% if sub.status == 'Approved' %}bg-success{% elif sub.status == 'Requires Revision' %}bg-warning text-dark{% elif sub.status == 'Submitted' %}bg-info text-dark{% else %}bg-secondary{% endif %}">
+                                <span class="badge rounded-pill px-3 py-1 {% if sub.status == 'Approved' %}bg-success{% elif sub.status == 'Requires Revision' %}cit-pill-gold{% elif sub.status == 'Submitted' %}bg-info text-dark{% else %}bg-secondary{% endif %}">
                                     {{ sub.get_status_display }}
                                 </span>
                             </td>
                             <td class="text-end pe-4">
-                                <a href="{% url 'accreditation:sso_review' submission_id=sub.id %}" class="btn btn-outline-dark btn-sm">
-                                    <i class="bi bi-search me-1"></i>Review
+                                <a href="{% url 'accreditation:sso_review' submission_id=sub.id %}" class="btn btn-org-outline btn-sm">
+                                    <i class="bi bi-search"></i><span>Review</span>
                                 </a>
                             </td>
                         </tr>

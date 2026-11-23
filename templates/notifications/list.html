@@ -5,20 +5,31 @@
 
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/notifications/notifications.css' %}">
+<style>
+    .cit-hero-banner { background: linear-gradient(135deg, #FFFDF7 0%, #FFF1C2 55%, #F2C21A 100%); border: 1px solid #EFE0B1; border-radius: 20px; box-shadow: 0 10px 28px rgba(128,29,29,0.08); }
+    .unread-notif { background-color: #FFF9E6 !important; border-left: 4px solid #F2C21A !important; }
+    .notif-icon-box { width: 44px; height: 44px; min-width: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; }
+    .bg-maroon-light { background-color: #FDECEC; }
+    .bg-gold-light { background-color: #FFF4CC; }
+</style>
 
 <div class="row justify-content-center my-4">
     <div class="col-lg-9">
 
-        <!-- Header -->
-        <div class="card card-orgflow mb-4 p-4 welcome-banner text-white shadow-sm">
+        <!-- Warm Golden CIT.edu Header -->
+        <div class="cit-hero-banner mb-4 p-4">
             <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
                 <div>
-                    <h2 class="fw-bold mb-1"><i class="bi bi-bell-fill me-2 text-warning"></i>Notifications & Alerts</h2>
-                    <p class="mb-0 text-white-50">Stay updated on membership approvals, delegated tasks, and SSO evaluations.</p>
+                    <h2 class="fw-bold mb-1" style="color: #2D1212;">
+                        <i class="bi bi-bell-fill me-2" style="color: #801D1D;"></i>Notifications &amp; Alerts
+                    </h2>
+                    <p class="mb-0 small fw-medium" style="color: #4A3728;">
+                        Stay updated on membership approvals, delegated tasks, and SSO evaluations.
+                    </p>
                 </div>
                 {% if unread_count > 0 %}
-                    <a href="{% url 'notifications:mark_all_read' %}" class="btn btn-warning fw-bold text-dark btn-sm px-3 py-2 shadow-sm">
-                        <i class="bi bi-check2-all me-1"></i>Mark All as Read ({{ unread_count }})
+                    <a href="{% url 'notifications:mark_all_read' %}" class="btn btn-org-primary btn-sm px-3 py-2">
+                        <i class="bi bi-check2-all"></i><span>Mark All as Read ({{ unread_count }})</span>
                     </a>
                 {% endif %}
             </div>
@@ -27,7 +38,7 @@
         <!-- Alerts -->
         {% if messages %}
             {% for message in messages %}
-                <div class="alert alert-success alert-dismissible fade show py-2 small mb-3" role="alert">
+                <div class="alert alert-success alert-dismissible fade show py-2 small mb-3 rounded-3" role="alert">
                     <i class="bi bi-check-circle-fill me-1"></i> {{ message }}
                     <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
                 </div>
@@ -35,19 +46,19 @@
         {% endif %}
 
         <!-- Notifications List -->
-        <div class="card card-orgflow shadow-sm">
+        <div class="card card-orgflow overflow-hidden">
             <div class="list-group list-group-flush">
                 {% for n in notifications %}
                     <div class="list-group-item p-4 d-flex justify-content-between align-items-center flex-wrap gap-3 {% if not n.is_read %}unread-notif{% endif %}">
                         <div class="d-flex align-items-start gap-3">
-                            <div class="notif-icon-box {% if n.notification_type == 'Accreditation' %}bg-gold-light text-gold{% elif n.notification_type == 'Project Task' %}bg-primary-subtle text-primary{% else %}bg-maroon-light text-maroon{% endif %}">
-                                <i class="bi {% if n.notification_type == 'Accreditation' %}bi-patch-check-fill{% elif n.notification_type == 'Project Task' %}bi-kanban-fill{% else %}bi-person-check-fill{% endif %} fs-5"></i>
+                            <div class="notif-icon-box {% if n.notification_type == 'Accreditation' %}bg-gold-light{% elif n.notification_type == 'Project Task' %}bg-primary-subtle text-primary{% else %}bg-maroon-light{% endif %}">
+                                <i class="bi {% if n.notification_type == 'Accreditation' %}bi-patch-check-fill{% elif n.notification_type == 'Project Task' %}bi-kanban-fill{% else %}bi-person-check-fill{% endif %} fs-5" {% if n.notification_type != 'Project Task' %}style="color: #801D1D;"{% endif %}></i>
                             </div>
                             <div>
-                                <div class="d-flex align-items-center gap-2 mb-1">
-                                    <span class="badge bg-light text-dark border small">{{ n.notification_type }}</span>
+                                <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                                    <span class="badge bg-light text-dark border rounded-pill small">{{ n.notification_type }}</span>
                                     {% if not n.is_read %}
-                                        <span class="badge bg-danger">New</span>
+                                        <span class="badge bg-danger rounded-pill">New</span>
                                     {% endif %}
                                     <small class="text-muted">{{ n.created_at|timesince }} ago</small>
                                 </div>
@@ -58,8 +69,8 @@
                         </div>
 
                         {% if not n.is_read %}
-                            <a href="{% url 'notifications:mark_read' notif_id=n.id %}" class="btn btn-outline-dark btn-sm">
-                                <i class="bi bi-check2 me-1"></i>Mark Read
+                            <a href="{% url 'notifications:mark_read' notif_id=n.id %}" class="btn btn-org-outline btn-sm">
+                                <i class="bi bi-check2"></i><span>Mark Read</span>
                             </a>
                         {% else %}
                             <span class="text-success small fw-semibold"><i class="bi bi-check2-all me-1"></i>Read</span>
@@ -68,7 +79,7 @@
                 {% empty %}
                     <div class="text-center py-5">
                         <i class="bi bi-bell-slash fs-1 text-muted d-block mb-2"></i>
-                        <h5 class="fw-bold text-garnet">All Caught Up!</h5>
+                        <h5 class="fw-bold" style="color: #2D1212;">All Caught Up!</h5>
                         <p class="text-muted small mb-0">You have no notifications at the moment.</p>
                     </div>
                 {% endfor %}

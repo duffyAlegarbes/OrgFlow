@@ -8,33 +8,33 @@
 
 <div class="row justify-content-center my-4">
     <div class="col-lg-8 col-md-10">
-        <div class="card card-orgflow shadow-sm">
-            <div class="card-header card-header-org py-3">
+        <div class="card card-orgflow overflow-hidden">
+            <div class="card-header card-header-org py-3 px-4">
                 <h4 class="mb-0 fs-5"><i class="bi bi-pencil-fill me-2 text-warning"></i>Edit Organization Post</h4>
             </div>
 
-            <form method="post" class="p-4">
+            <form method="post" class="p-4 p-lg-5 bg-white">
                 {% csrf_token %}
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold small text-garnet">Organization</label>
-                    <input type="text" class="form-control bg-light" value="{{ post.organization.name }}" readonly disabled>
+                    <label class="form-label fw-bold small text-dark">Organization</label>
+                    <input type="text" class="form-control cit-input bg-light" value="{{ post.organization.name }}" readonly disabled>
                 </div>
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold small text-garnet">Headline / Title</label>
-                    <input type="text" name="title" class="form-control" value="{{ post.title }}" required>
+                    <label class="form-label fw-bold small text-dark">Headline / Title</label>
+                    <input type="text" name="title" class="form-control cit-input" value="{{ post.title }}" required>
                 </div>
 
                 {% if post.post_type == 'Partnership' and post.partnership_details %}
-                    <div class="row g-2 mb-3 p-3 bg-light border border-warning rounded-3">
+                    <div class="row g-2 mb-3 p-3 rounded-3" style="background-color: #FFF9E6; border: 1.5px solid #F2C21A;">
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold text-garnet">Target Partner Category</label>
-                            <input type="text" name="target_category" class="form-control form-control-sm" value="{{ post.partnership_details.target_category }}">
+                            <label class="form-label small fw-bold text-dark">Target Partner Category</label>
+                            <input type="text" name="target_category" class="form-control form-control-sm cit-input bg-white" value="{{ post.partnership_details.target_category }}">
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label small fw-bold text-garnet">Partnership Status</label>
-                            <select name="partnership_status" class="form-select form-select-sm">
+                            <label class="form-label small fw-bold text-dark">Partnership Status</label>
+                            <select name="partnership_status" class="form-select form-select-sm cit-input bg-white">
                                 {% for key, label in partnership_statuses %}
                                     <option value="{{ key }}" {% if post.partnership_details.status == key %}selected{% endif %}>{{ label }}</option>
                                 {% endfor %}
@@ -44,13 +44,13 @@
                 {% endif %}
 
                 <div class="mb-3">
-                    <label class="form-label fw-bold small text-garnet">Post Body / Details</label>
-                    <textarea name="content" class="form-control" rows="6" required>{{ post.content }}</textarea>
+                    <label class="form-label fw-bold small text-dark">Post Body / Details</label>
+                    <textarea name="content" class="form-control cit-input" rows="6" required>{{ post.content }}</textarea>
                 </div>
 
                 <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
-                    <a href="{% url 'posts:feed' %}" class="btn btn-outline-secondary btn-sm">Cancel</a>
-                    <button type="submit" class="btn btn-org-primary">Save Changes</button>
+                    <a href="{% url 'posts:feed' %}" class="btn btn-light border rounded-pill btn-sm px-3 fw-semibold">Cancel</a>
+                    <button type="submit" class="btn btn-org-primary px-4">Save Changes</button>
                 </div>
             </form>
         </div>

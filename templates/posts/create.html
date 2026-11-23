@@ -8,27 +8,26 @@
 
 <div class="row justify-content-center my-4">
     <div class="col-lg-8 col-md-10">
-        <div class="card card-orgflow shadow-sm">
-            <div class="card-header card-header-org py-3">
+        <div class="card card-orgflow overflow-hidden">
+            <div class="card-header card-header-org py-3 px-4">
                 <h4 class="mb-0 fs-5"><i class="bi bi-pencil-square me-2 text-warning"></i>Publish Organization Post</h4>
             </div>
 
-            <form method="post" class="p-4">
+            <form method="post" class="p-4 p-lg-5 bg-white">
                 {% csrf_token %}
 
                 {% if messages %}
                     {% for message in messages %}
-                        <div class="alert alert-danger py-2 small mb-3">
+                        <div class="alert alert-danger py-2 small mb-3 rounded-3">
                             {{ message }}
                         </div>
                     {% endfor %}
                 {% endif %}
 
                 <div class="row g-3">
-                    <!-- Select Organization (Anti-Impersonation Restricted) -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small text-garnet">Posting On Behalf Of <span class="text-danger">*</span></label>
-                        <select name="organization_id" class="form-select" required>
+                        <label class="form-label fw-bold small text-dark">Posting On Behalf Of <span class="text-danger">*</span></label>
+                        <select name="organization_id" class="form-select cit-input" required>
                             {% for m in officer_memberships %}
                                 <option value="{{ m.organization.id }}" {% if preselect_slug == m.organization.slug %}selected{% endif %}>
                                     {{ m.organization.name }} ({{ m.role }})
@@ -37,22 +36,23 @@
                         </select>
                     </div>
 
-                    <!-- Post Type -->
                     <div class="col-md-6">
-                        <label class="form-label fw-bold small text-garnet">Post Category <span class="text-danger">*</span></label>
-                        <select name="post_type" id="postTypeSelect" class="form-select" required>
+                        <label class="form-label fw-bold small text-dark">Post Category <span class="text-danger">*</span></label>
+                        <select name="post_type" id="postTypeSelect" class="form-select cit-input" required>
                             {% for key, label in post_types %}
                                 <option value="{{ key }}">{{ label }}</option>
                             {% endfor %}
                         </select>
                     </div>
 
-                    <!-- Dynamic Partnership Request Fields (Hidden unless Partnership is selected) -->
+                    <!-- Dynamic Partnership Request Fields -->
                     <div class="col-12 d-none" id="partnershipFields">
-                        <div class="p-3 bg-light border border-warning rounded-3">
-                            <h6 class="fw-bold text-garnet mb-2"><i class="bi bi-handshake-fill me-1 text-gold"></i>Partnership Requirements</h6>
-                            <label class="form-label small fw-semibold">Target Partner Category / Organization Type</label>
-                            <select name="target_category" class="form-select form-select-sm">
+                        <div class="p-3 rounded-3" style="background-color: #FFF9E6; border: 1.5px solid #F2C21A;">
+                            <h6 class="fw-bold mb-2" style="color: #2D1212;">
+                                <i class="bi bi-handshake-fill me-1" style="color: #801D1D;"></i>Partnership Requirements
+                            </h6>
+                            <label class="form-label small fw-semibold text-dark">Target Partner Category / Organization Type</label>
+                            <select name="target_category" class="form-select form-select-sm cit-input bg-white">
                                 <option value="Any Student Organization">Any Student Organization</option>
                                 {% for key, label in target_categories %}
                                     <option value="{{ label }}">{{ label }}</option>
@@ -62,23 +62,21 @@
                         </div>
                     </div>
 
-                    <!-- Title -->
                     <div class="col-12">
-                        <label class="form-label fw-bold small text-garnet">Headline / Title <span class="text-danger">*</span></label>
-                        <input type="text" name="title" class="form-control" placeholder="e.g. Call for Co-Organizers: Regional DevFest 2025" required>
+                        <label class="form-label fw-bold small text-dark">Headline / Title <span class="text-danger">*</span></label>
+                        <input type="text" name="title" class="form-control cit-input" placeholder="e.g. Call for Co-Organizers: Regional DevFest 2025" required>
                     </div>
 
-                    <!-- Content -->
                     <div class="col-12">
-                        <label class="form-label fw-bold small text-garnet">Post Body / Details <span class="text-danger">*</span></label>
-                        <textarea name="content" class="form-control" rows="6" placeholder="Write your announcement, event schedule, or partnership proposal here..." required></textarea>
+                        <label class="form-label fw-bold small text-dark">Post Body / Details <span class="text-danger">*</span></label>
+                        <textarea name="content" class="form-control cit-input" rows="6" placeholder="Write your announcement, event schedule, or partnership proposal here..." required></textarea>
                     </div>
                 </div>
 
                 <div class="mt-4 pt-3 border-top d-flex justify-content-between align-items-center">
-                    <a href="{% url 'posts:feed' %}" class="btn btn-outline-secondary btn-sm">Cancel</a>
-                    <button type="submit" class="btn btn-org-primary">
-                        <i class="bi bi-send-fill me-1"></i>Publish to Feed
+                    <a href="{% url 'posts:feed' %}" class="btn btn-light border rounded-pill btn-sm px-3 fw-semibold">Cancel</a>
+                    <button type="submit" class="btn btn-org-primary px-4">
+                        <i class="bi bi-send-fill"></i><span>Publish to Feed</span>
                     </button>
                 </div>
             </form>

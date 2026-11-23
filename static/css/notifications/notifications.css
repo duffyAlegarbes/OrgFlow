@@ -1,25 +1,28 @@
-/* Notifications Styles */
-.welcome-banner {
-    background: linear-gradient(135deg, #990000, #6B2E1E);
+/* CIT.edu Inspired Notifications Styles */
+.cit-hero-banner {
+    background: linear-gradient(135deg, #FFFDF7 0%, #FFF1C2 55%, #F2C21A 100%);
+    border: 1px solid #EFE0B1;
+    border-radius: 20px;
+    box-shadow: 0 10px 28px rgba(128, 29, 29, 0.08);
 }
 
 .unread-notif {
-    background-color: #FFF9EE !important;
-    border-left: 4px solid #DAA520 !important;
+    background-color: #FFF9E6 !important;
+    border-left: 4px solid #F2C21A !important;
 }
 
 .notif-icon-box {
     width: 44px;
     height: 44px;
     min-width: 44px;
-    border-radius: 50%;
+    border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
-.bg-maroon-light { background-color: #fce8e6; }
-.bg-gold-light { background-color: #fdf3d8; }
-.text-maroon { color: #990000 !important; }
-.text-gold { color: #DAA520 !important; }
-.text-garnet { color: #6B2E1E !important; }
+.bg-maroon-light { background-color: #FDECEC; }
+.bg-gold-light { background-color: #FFF4CC; }
+.text-maroon { color: #801D1D !important; }
+.text-gold { color: #C99A08 !important; }
+.text-garnet { color: #2D1212 !important; }

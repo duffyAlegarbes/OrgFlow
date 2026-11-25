@@ -1,8 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Q, Subquery
-from apps.projects.models import Project
+from django.db.models import Q
 from .models import Organization, OrganizationMembership
 from apps.notifications.models import Notification
 
@@ -10,7 +9,6 @@ from apps.notifications.models import Notification
 def org_directory_view(request):
     query = request.GET.get('search', '').strip()
     selected_category = request.GET.get('category', '').strip()
-    with_projects = request.GET.get('with_projects', '').strip()
 
     organizations = Organization.objects.filter(status='Active')
 
@@ -22,14 +20,6 @@ def org_directory_view(request):
     if selected_category:
         organizations = organizations.filter(category=selected_category)
 
-    # SUBQUERY IMPLEMENTATION: Filter organizations that have at least one project
-    if with_projects == '1':
-        org_ids_with_projects = Project.objects.values('organization_id')
-        organizations = organizations.filter(id__in=Subquery(org_ids_with_projects))
-        print("\n=== GENERATED SUBQUERY SQL ===")
-        print(organizations.query)
-        print("==============================\n")
-
     user_memberships = OrganizationMembership.objects.filter(
         user=request.user, status='Active'
     ).values_list('organization_id', flat=True)
@@ -38,7 +28,6 @@ def org_directory_view(request):
         "organizations": organizations,
         "query": query,
         "selected_category": selected_category,
-        "with_projects": with_projects,
         "categories": Organization.CATEGORY_CHOICES,
         "total_count": organizations.count(),
         "user_org_ids": list(user_memberships)
@@ -51,14 +40,10 @@ def org_detail_view(request, slug):
 
     membership = OrganizationMembership.objects.filter(user=request.user, organization=org).first()
 
-    # JOIN IMPLEMENTATION: Combines OrganizationMembership, auth_user, and profile_profile
+    # Production ORM optimization: single JOIN query for user and profile
     active_members = OrganizationMembership.objects.filter(
         organization=org, status='Active'
     ).select_related('user', 'user__profile')
-
-    print("\n=== GENERATED JOIN SQL ===")
-    print(active_members.query)
-    print("==========================\n")
 
     is_officer = membership and membership.status == 'Active' and membership.role in ['President', 'Officer']
     is_president = membership and membership.status == 'Active' and membership.role == 'President'

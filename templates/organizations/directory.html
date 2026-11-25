@@ -40,7 +40,7 @@
 <!-- Search & Filter Controls -->
 <div class="card card-orgflow p-3 mb-4">
     <form method="get" class="row g-2 align-items-center">
-        <div class="col-md-5">
+        <div class="col-md-7">
             <div class="input-group">
                 <span class="input-group-text bg-light border-end-0"><i class="bi bi-search text-muted"></i></span>
                 <input type="text" name="search" class="form-control cit-input border-start-0" placeholder="Search by organization name, acronym, or mission..." value="{{ query }}">
@@ -54,15 +54,9 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="col-md-2">
-            <div class="form-check form-switch ms-1">
-                <input class="form-check-input" type="checkbox" name="with_projects" value="1" id="withProjectsCheck" {% if with_projects == '1' %}checked{% endif %}>
-                <label class="form-check-label small fw-bold text-dark" for="withProjectsCheck">Has Projects</label>
-            </div>
-        </div>
         <div class="col-md-2 d-flex gap-2">
             <button type="submit" class="btn btn-org-primary w-100">Filter</button>
-            {% if query or selected_category or with_projects %}
+            {% if query or selected_category %}
                 <a href="{% url 'organizations:directory' %}" class="btn btn-outline-secondary rounded-pill" title="Reset Filters"><i class="bi bi-arrow-counterclockwise"></i></a>
             {% endif %}
         </div>

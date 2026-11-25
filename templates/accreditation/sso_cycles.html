@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Manage Accreditation Cycles - OrgFlow SSO{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/accreditation/accreditation.css' %}">
+<style>
+    .cit-hero-banner { background: linear-gradient(135deg, #FFFDF7 0%, #FFF1C2 55%, #F2C21A 100%); border: 1px solid #EFE0B1; border-radius: 20px; box-shadow: 0 10px 28px rgba(128,29,29,0.08); }
+    .cit-pill-maroon { background-color: #801D1D !important; color: #FFFFFF !important; font-weight: 700; border-radius: 999px; }
+    .cit-pill-gold { background-color: #F2C21A !important; color: #1F1F1F !important; font-weight: 800; border-radius: 999px; }
+    .cit-input { background-color: #F8F9FA; border: 1.5px solid #E2E5E9; border-radius: 10px; }
+    .btn-close-white { filter: invert(1) grayscale(100%) brightness(200%); }
+</style>
+
+<!-- Warm Golden CIT.edu Header -->
+<div class="cit-hero-banner p-4 mb-4">
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <span class="badge cit-pill-maroon px-3 py-1 mb-2">
+                <i class="bi bi-shield-lock-fill me-1 text-warning"></i>STUDENT SUCCESS OFFICE
+            </span>
+            <h2 class="fw-bold mb-1" style="color: #2D1212;">
+                <i class="bi bi-calendar-range-fill me-2" style="color: #801D1D;"></i>Accreditation Cycles &amp; Requirements
+            </h2>
+            <p class="mb-0 small fw-medium" style="color: #4A3728;">
+                Open academic year compliance cycles and define required documents for student organizations.
+            </p>
+        </div>
+
+        <div class="d-flex gap-2 flex-wrap">
+            <button type="button" class="btn btn-org-primary btn-sm px-3 py-2" data-bs-toggle="modal" data-bs-target="#newCycleModal">
+                <i class="bi bi-plus-circle-fill"></i><span>New Cycle</span>
+            </button>
+            <a href="{% url 'accreditation:sso_dashboard' %}" class="btn btn-light btn-sm rounded-pill border px-3 py-2 fw-semibold">
+                <i class="bi bi-arrow-left me-1"></i>Back to SSO Desk
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Alerts -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert {% if message.tags == 'error' %}alert-danger{% elif message.tags == 'info' %}alert-info{% else %}alert-success{% endif %} alert-dismissible fade show py-2 small mb-4 rounded-3" role="alert">
+            <i class="bi bi-info-circle-fill me-1"></i> {{ message }}
+            <button type="button" class="btn-close py-2" data-bs-dismiss="alert"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- Cycles List -->
+{% for cycle in cycles %}
+    <div class="card card-orgflow mb-4 overflow-hidden">
+        <div class="card-header card-header-org py-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <div class="d-flex align-items-center gap-2 flex-wrap">
+                <span class="badge cit-pill-gold px-3 py-1">{{ cycle.academic_year }}</span>
+                <span class="fw-bold fs-6">{{ cycle.title }}</span>
+                {% if cycle.is_active %}
+                    <span class="badge bg-success rounded-pill px-3 py-1"><i class="bi bi-check-circle-fill me-1"></i>Active Cycle</span>
+                {% else %}
+                    <span class="badge bg-secondary rounded-pill px-3 py-1">Inactive</span>
+                {% endif %}
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+                {% if not cycle.is_active %}
+                    <form method="post" class="m-0">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="activate_cycle">
+                        <input type="hidden" name="cycle_id" value="{{ cycle.id }}">
+                        <button type="submit" class="btn btn-org-gold btn-sm">
+                            <i class="bi bi-lightning-fill"></i><span>Set Active</span>
+                        </button>
+                    </form>
+                {% endif %}
+                <button type="button" class="btn btn-light btn-sm rounded-pill fw-bold" data-bs-toggle="modal" data-bs-target="#addReqModal{{ cycle.id }}">
+                    <i class="bi bi-plus-lg me-1 text-danger"></i>Add Requirement
+                </button>
+            </div>
+        </div>
+
+        <div class="card-body p-4">
+            <p class="small text-muted mb-3">
+                <i class="bi bi-calendar-event me-1"></i>Start Date: <strong>{{ cycle.start_date|date:"F d, Y" }}</strong>
+            </p>
+
+            <!-- Requirements Table -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small">
+                        <tr>
+                            <th>Requirement Title</th>
+                            <th>Importance</th>
+                            <th class="text-end">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for req in cycle.requirements.all %}
+                            <tr>
+                                <td class="fw-bold text-dark">{{ req.title }}</td>
+                                <td>
+                                    {% if req.is_mandatory %}
+                                        <span class="badge cit-pill-maroon px-2 py-1">Mandatory</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary rounded-pill px-2 py-1">Optional</span>
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                                    <form method="post" class="m-0 d-inline" onsubmit="return confirm('Delete requirement &quot;{{ req.title }}&quot;? Any linked submission document rows for this requirement will also be removed.');">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="delete_requirement">
+                                        <input type="hidden" name="requirement_id" value="{{ req.id }}">
+                                        <button type="submit" class="btn btn-outline-danger btn-sm rounded-circle" title="Remove Requirement">
+                                            <i class="bi bi-trash-fill"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="3" class="text-center text-muted py-3 small">
+                                    No requirements added to this cycle yet. Click <strong>Add Requirement</strong> above.
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Requirement Modal -->
+    <div class="modal fade" id="addReqModal{{ cycle.id }}" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content card-orgflow border-0 overflow-hidden">
+                <div class="modal-header card-header-org py-3">
+                    <h5 class="modal-title fs-6"><i class="bi bi-list-check me-2 text-warning"></i>Add Requirement ({{ cycle.academic_year }})</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="action" value="add_requirement">
+                    <input type="hidden" name="cycle_id" value="{{ cycle.id }}">
+                    <div class="modal-body p-4 bg-white">
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold text-dark">Requirement Name <span class="text-danger">*</span></label>
+                            <input type="text" name="req_title" class="form-control cit-input" placeholder="e.g. Constitution & By-Laws" required>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-input" type="checkbox" name="is_mandatory" id="mandatorySwitch{{ cycle.id }}" checked>
+                            <label class="form-check-label small fw-bold text-dark" for="mandatorySwitch{{ cycle.id }}">
+                                Mandatory Requirement
+                            </label>
+                        </div>
+                    </div>
+                    <div class="modal-footer bg-light py-2">
+                        <button type="button" class="btn btn-light border rounded-pill btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-org-primary btn-sm">Save Requirement</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% empty %}
+    <div class="card card-orgflow p-5 text-center">
+        <i class="bi bi-calendar-plus fs-1 text-muted d-block mb-3"></i>
+        <h5 class="fw-bold" style="color: #2D1212;">No Accreditation Cycles Created Yet</h5>
+        <p class="text-muted small mb-3">Create your first academic year accreditation cycle so student organizations can begin submitting documents.</p>
+        <div>
+            <button type="button" class="btn btn-org-primary btn-sm" data-bs-toggle="modal" data-bs-target="#newCycleModal">
+                <i class="bi bi-plus-circle"></i><span>Create Accreditation Cycle</span>
+            </button>
+        </div>
+    </div>
+{% endfor %}
+
+<!-- New Cycle Modal -->
+<div class="modal fade" id="newCycleModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-orgflow border-0 overflow-hidden">
+            <div class="modal-header card-header-org py-3">
+                <h5 class="modal-title fs-5"><i class="bi bi-calendar-plus-fill me-2 text-warning"></i>Create Accreditation Cycle</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="create_cycle">
+                <div class="modal-body p-4 bg-white">
+                    <div class="mb-3">
+                        <label class="form-label small fw-bold text-dark">Cycle Title <span class="text-danger">*</span></label>
+                        <input type="text" name="title" class="form-control cit-input" placeholder="e.g. Annual Organization Accreditation" required>
+                    </div>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-dark">Academic Year <span class="text-danger">*</span></label>
+                            <input type="text" name="academic_year" class="form-control cit-input" placeholder="e.g. 2026-2027" required>
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label small fw-bold text-dark">Start Date <span class="text-danger">*</span></label>
+                            <input type="date" name="start_date" class="form-control cit-input" required>
+                        </div>
+                    </div>
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" name="is_active" id="activeCycleSwitch" checked>
+                        <label class="form-check-label small fw-bold text-dark" for="activeCycleSwitch">
+                            Set as currently Active Cycle
+                        </label>
+                        <div class="form-text text-muted small">Activating this cycle will automatically close previous cycles.</div>
+                    </div>
+                </div>
+                <div class="modal-footer bg-light py-2">
+                    <button type="button" class="btn btn-light border rounded-pill btn-sm px-3" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-org-primary btn-sm">Create Cycle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="{% static 'js/accreditation/accreditation.js' %}"></script>
+{% endblock %}

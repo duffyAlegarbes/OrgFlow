@@ -117,3 +117,43 @@ def kpi_target_update_view(request, target_id):
             messages.success(request, f"Updated progress for '{target.metric_name}' to {achieved_value}!")
 
     return redirect("kpi:dashboard", org_slug=org.slug)
+
+@login_required(login_url='login:login')
+def sso_agendas_view(request):
+    """SSO Staff: Create and manage institutional Student Agendas without /admin/."""
+    if not request.user.is_staff:
+        messages.error(request, "Access restricted to Student Success Office staff.")
+        return redirect("home:home")
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "create_agenda":
+            title = request.POST.get("title", "").strip()
+            academic_year = request.POST.get("academic_year", "").strip()
+            description = request.POST.get("description", "").strip()
+
+            if not title or not academic_year or not description:
+                messages.error(request, "Title, Academic Year, and Description are required.")
+                return redirect("kpi:sso_agendas")
+
+            StudentAgenda.objects.create(
+                title=title,
+                academic_year=academic_year,
+                description=description,
+            )
+            messages.success(request, f"Student Agenda '{title}' published!")
+
+        elif action == "delete_agenda":
+            agenda_id = request.POST.get("agenda_id")
+            agenda = get_object_or_404(StudentAgenda, id=agenda_id)
+            agenda_title = agenda.title
+            agenda.delete()
+            messages.info(request, f"Removed Student Agenda '{agenda_title}'.")
+
+        return redirect("kpi:sso_agendas")
+
+    agendas = StudentAgenda.objects.all().order_by('-academic_year', 'title')
+    return render(request, "kpi/sso_agendas.html", {
+        "agendas": agendas,
+    })

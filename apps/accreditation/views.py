@@ -206,3 +206,75 @@ def sso_review_view(request, submission_id):
         "submission": submission,
         "submitted_docs": submitted_docs,
     })
+
+@login_required(login_url='login:login')
+def sso_cycles_view(request):
+    """SSO Staff: Create/activate accreditation cycles and manage requirements without /admin/."""
+    if not request.user.is_staff:
+        messages.error(request, "Access restricted to Student Success Office staff.")
+        return redirect("home:home")
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+
+        if action == "create_cycle":
+            title = request.POST.get("title", "").strip()
+            academic_year = request.POST.get("academic_year", "").strip()
+            start_date = request.POST.get("start_date")
+            is_active = request.POST.get("is_active") == "on"
+
+            if not title or not academic_year or not start_date:
+                messages.error(request, "Title, Academic Year, and Start Date are required.")
+                return redirect("accreditation:sso_cycles")
+
+            if is_active:
+                # Ensure only one cycle is active at a time
+                AccreditationCycle.objects.update(is_active=False)
+
+            cycle = AccreditationCycle.objects.create(
+                title=title,
+                academic_year=academic_year,
+                start_date=start_date,
+                is_active=is_active,
+            )
+            messages.success(request, f"Accreditation Cycle '{cycle.title}' created!")
+
+        elif action == "activate_cycle":
+            cycle_id = request.POST.get("cycle_id")
+            cycle = get_object_or_404(AccreditationCycle, id=cycle_id)
+            AccreditationCycle.objects.update(is_active=False)
+            cycle.is_active = True
+            cycle.save()
+            messages.success(request, f"'{cycle.title} ({cycle.academic_year})' is now the active accreditation cycle.")
+
+        elif action == "add_requirement":
+            cycle_id = request.POST.get("cycle_id")
+            req_title = request.POST.get("req_title", "").strip()
+            is_mandatory = request.POST.get("is_mandatory") == "on"
+
+            cycle = get_object_or_404(AccreditationCycle, id=cycle_id)
+            if not req_title:
+                messages.error(request, "Requirement title cannot be empty.")
+                return redirect("accreditation:sso_cycles")
+
+            AccreditationRequirement.objects.create(
+                cycle=cycle,
+                title=req_title,
+                is_mandatory=is_mandatory,
+            )
+            messages.success(request, f"Added requirement '{req_title}' to {cycle.academic_year}.")
+
+        elif action == "delete_requirement":
+            req_id = request.POST.get("requirement_id")
+            req = get_object_or_404(AccreditationRequirement, id=req_id)
+            req_title = req.title
+            req.delete()
+            messages.info(request, f"Removed requirement '{req_title}'.")
+
+        return redirect("accreditation:sso_cycles")
+
+    cycles = AccreditationCycle.objects.prefetch_related('requirements').order_by('-start_date', '-id')
+
+    return render(request, "accreditation/sso_cycles.html", {
+        "cycles": cycles,
+    })

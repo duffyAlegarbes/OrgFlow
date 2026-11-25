@@ -25,6 +25,16 @@
                 Audit organization submissions, inspect legal documentation, and grant academic year accreditation.
             </p>
         </div>
+
+        <!-- SSO Management Shortcuts -->
+        <div class="d-flex gap-2 flex-wrap">
+            <a href="{% url 'accreditation:sso_cycles' %}" class="btn btn-org-primary btn-sm px-3 py-2">
+                <i class="bi bi-calendar-range-fill"></i><span>Cycles &amp; Requirements</span>
+            </a>
+            <a href="{% url 'kpi:sso_agendas' %}" class="btn btn-org-outline btn-sm bg-white px-3 py-2">
+                <i class="bi bi-bullseye"></i><span>Student Agendas</span>
+            </a>
+        </div>
     </div>
 </div>
 
